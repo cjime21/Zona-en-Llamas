@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zona en Llamas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rojo: #d50e3c;
+            --negro: #000000;
+            --gris: #aeaeae;
+            --blanco: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: var(--negro);
+            cursor: none;
+        }
+
+        /* ── CURSOR PERSONALIZADO ── */
+        .cursor {
+            position: fixed;
+            width: 12px;
+            height: 12px;
+            background: var(--rojo);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform 0.1s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s;
+            mix-blend-mode: difference;
+        }
+
+        .cursor-ring {
+            position: fixed;
+            width: 40px;
+            height: 40px;
+            border: 1.5px solid var(--rojo);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease, opacity 0.3s;
+            opacity: 0.6;
+        }
+
+        /* ── CONTENEDOR PRINCIPAL ── */
+        .portada {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* ── CANVAS ESPEJO DE FONDO ── */
+        #canvas-espejo {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            width: 100%;
+            height: 100%;
+            filter: grayscale(100%) contrast(1.25) brightness(0.75);
+        }
+
+        /* ── OVERLAY DE GRANO / TEXTURA ── */
+        .overlay-grano {
+            position: absolute;
+            inset: 0;
+            z-index: 1;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+        }
+
+        /* ── VIGNETTE ── */
+        .overlay-vignette {
+            position: absolute;
+            inset: 0;
+            z-index: 2;
+            background: radial-gradient(ellipse at center, transparent 30%, rgba(0,0,0,0.85) 100%);
+            pointer-events: none;
+        }
+
+        /* ── LÍNEAS DE ESCÁNER (efecto glitch) ── */
+        .scanlines {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.07) 2px,
+                rgba(0,0,0,0.07) 4px
+            );
+            pointer-events: none;
+            animation: scanMove 8s linear infinite;
+        }
+
+        @keyframes scanMove {
+            0%   { background-position: 0 0; }
+            100% { background-position: 0 100px; }
+        }
+
+        /* ── FAJA ROJA DIAGONAL (accento brutalista) ── */
+        .faja-roja {
+            position: absolute;
+            bottom: -20px;
+            left: -5%;
+            width: 110%;
+            height: 6px;
+            background: var(--rojo);
+            z-index: 10;
+            transform: rotate(-0.8deg);
+            transform-origin: left center;
+            animation: fajaEntrada 1.8s cubic-bezier(0.77,0,0.175,1) 0.5s both;
+        }
+
+        @keyframes fajaEntrada {
+            from { transform: rotate(-0.8deg) scaleX(0); }
+            to   { transform: rotate(-0.8deg) scaleX(1); }
+        }
+
+        /* ── NÚMERO DE EDICIÓN (esquina) ── */
+        .edicion {
+            position: absolute;
+            top: 40px;
+            left: 5%;
+            z-index: 20;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 0.95rem;
+            letter-spacing: 4px;
+            color: var(--gris);
+            opacity: 0;
+            animation: fadeUp 1s ease 2s both;
+        }
+
+        .edicion span {
+            color: var(--rojo);
+        }
+
+        /* ── AÑO (esquina derecha) ── */
+        .anio {
+            position: absolute;
+            top: 40px;
+            right: 5%;
+            z-index: 20;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 0.95rem;
+            letter-spacing: 4px;
+            color: var(--gris);
+            opacity: 0;
+            animation: fadeUp 1s ease 2.1s both;
+        }
+
+        /* ── CONTENIDO CENTRAL ── */
+        .contenido {
+            position: relative;
+            z-index: 20;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            user-select: none;
+        }
+
+        /* ── TEXTO ZONA EN ── */
+        .titulo-1 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(6rem, 18vw, 20rem);
+            line-height: 0.82;
+            color: transparent;
+            -webkit-text-stroke: 1.5px var(--blanco);
+            letter-spacing: 4px;
+            clip-path: inset(0 100% 0 0);
+            animation: revelarIzquierda 1.2s cubic-bezier(0.77,0,0.175,1) 0.3s both;
+        }
+
+        /* ── TEXTO LLAMAS ── */
+        .titulo-2 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(6rem, 18vw, 20rem);
+            line-height: 0.82;
+            color: var(--rojo);
+            letter-spacing: 4px;
+            clip-path: inset(0 0 0 100%);
+            animation: revelarDerecha 1.2s cubic-bezier(0.77,0,0.175,1) 0.5s both;
+            position: relative;
+        }
+
+        /* Efecto glitch en hover de LLAMAS */
+        .titulo-2::before,
+        .titulo-2::after {
+            content: 'LLAMAS';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            opacity: 0;
+        }
+        .titulo-2::before {
+            color: var(--blanco);
+            clip-path: inset(30% 0 60% 0);
+        }
+        .titulo-2::after {
+            color: var(--gris);
+            clip-path: inset(60% 0 20% 0);
+        }
+
+        .titulo-2:hover::before {
+            opacity: 0.7;
+            animation: glitchB 0.25s steps(2) infinite;
+        }
+        .titulo-2:hover::after {
+            opacity: 0.5;
+            animation: glitchC 0.3s steps(2) infinite;
+        }
+
+        @keyframes glitchB {
+            0%   { transform: translateX(-4px); }
+            50%  { transform: translateX(4px); }
+            100% { transform: translateX(-4px); }
+        }
+        @keyframes glitchC {
+            0%   { transform: translateX(3px); }
+            50%  { transform: translateX(-3px); }
+            100% { transform: translateX(3px); }
+        }
+
+        @keyframes revelarIzquierda {
+            from { clip-path: inset(0 100% 0 0); }
+            to   { clip-path: inset(0 0% 0 0); }
+        }
+
+        @keyframes revelarDerecha {
+            from { clip-path: inset(0 0 0 100%); }
+            to   { clip-path: inset(0 0 0 0%); }
+        }
+
+        /* ── SEPARADOR ── */
+        .separador {
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--rojo), transparent);
+            margin: 18px 0 22px 0;
+            animation: expandirSep 1s ease 1.2s both;
+        }
+
+        @keyframes expandirSep {
+            from { width: 0; }
+            to   { width: min(500px, 80vw); }
+        }
+
+        /* ── SUBTÍTULO ── */
+        .subtitulo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: clamp(0.75rem, 1.5vw, 1rem);
+            font-weight: 300;
+            letter-spacing: 6px;
+            color: var(--gris);
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeUp 1s ease 1.5s both;
+        }
+
+        /* ── INDICADOR CLIC ── */
+        .clic-hint {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 20;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            opacity: 0;
+            animation: fadeUp 1s ease 2.5s both;
+        }
+
+        .clic-hint span {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 0.85rem;
+            letter-spacing: 5px;
+            color: var(--gris);
+        }
+
+        .clic-hint-linea {
+            width: 1px;
+            height: 40px;
+            background: linear-gradient(to bottom, var(--rojo), transparent);
+            animation: pulsarLinea 2s ease-in-out infinite;
+        }
+
+        @keyframes pulsarLinea {
+            0%, 100% { opacity: 1; transform: scaleY(1); }
+            50%       { opacity: 0.4; transform: scaleY(0.5); }
+        }
+
+        /* ── PARTÍCULAS DE FUEGO (canvas) ── */
+        #canvas-fuego {
+            position: absolute;
+            inset: 0;
+            z-index: 5;
+            pointer-events: none;
+            opacity: 0.55;
+        }
+
+        /* ── FLASH AL HACER CLIC ── */
+        .flash {
+            position: fixed;
+            inset: 0;
+            background: var(--rojo);
+            z-index: 9990;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .flash.activo {
+            animation: flashOut 0.5s ease forwards;
+        }
+
+        @keyframes flashOut {
+            0%   { opacity: 0.8; }
+            100% { opacity: 0; }
+        }
+
+        /* ── ANIMACIONES UTILIDAD ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── GLITCH PERIÓDICO EN EL TÍTULO 1 ── */
+        .titulo-1-wrap {
+            position: relative;
+            display: inline-block;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            .edicion, .anio { font-size: 0.75rem; top: 25px; }
+            .clic-hint { bottom: 35px; }
+            .subtitulo { letter-spacing: 3px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cursor personalizado -->
+    <div class="cursor" id="cursor"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- Flash de transición -->
+    <div class="flash" id="flash"></div>
+
+    <div class="portada" id="portada">
+
+        <!-- Canvas efecto espejo -->
+        <canvas id="canvas-espejo"></canvas>
+
+        <!-- Capas de atmósfera -->
+        <div class="overlay-grano"></div>
+        <div class="overlay-vignette"></div>
+        <div class="scanlines"></div>
+
+        <!-- Canvas de partículas -->
+        <canvas id="canvas-fuego"></canvas>
+
+        <!-- Elementos de esquina -->
+        <div class="edicion">DISEÑO GRÁFICO <span>//</span> EDICIÓN 2026</div>
+        <div class="anio">2026</div>
+
+        <!-- Títulos -->
+        <div class="contenido">
+            <div class="titulo-1-wrap">
+                <h1 class="titulo-1">ZONA EN</h1>
+            </div>
+            <div class="separador"></div>
+            <h1 class="titulo-2">LLAMAS</h1>
+            <p class="subtitulo">Hay fuegos que no se ven, pero se sienten todos los días</p>
+        </div>
+
+        <!-- Indicador -->
+        <div class="clic-hint">
+            <span>Toca para entrar</span>
+            <div class="clic-hint-linea"></div>
+        </div>
+
+        <!-- Faja decorativa -->
+        <div class="faja-roja"></div>
+
+    </div>
+
+    <script>
+        // ── CURSOR ──
+        const cursor = document.getElementById('cursor');
+        const ring = document.getElementById('cursorRing');
+        let mx = -100, my = -100, rx = -100, ry = -100;
+
+        document.addEventListener('mousemove', e => {
+            mx = e.clientX; my = e.clientY;
+            cursor.style.left = mx + 'px';
+            cursor.style.top  = my + 'px';
+        });
+
+        // Ring con lag suave
+        function animRing() {
+            rx += (mx - rx) * 0.12;
+            ry += (my - ry) * 0.12;
+            ring.style.left = rx + 'px';
+            ring.style.top  = ry + 'px';
+            requestAnimationFrame(animRing);
+        }
+        animRing();
+
+        // ── PARTÍCULAS DE FUEGO ──
+        const canvas = document.getElementById('canvas-fuego');
+        const ctx = canvas.getContext('2d');
+
+        function resize() {
+            canvas.width  = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resize();
+        window.addEventListener('resize', resize);
+
+        class Particula {
+            constructor() { this.reset(); }
+
+            reset() {
+                // Distribuidas en la parte inferior
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + Math.random() * 60;
+                this.vx = (Math.random() - 0.5) * 0.8;
+                this.vy = -(Math.random() * 2.5 + 1.2);
+                this.alpha = Math.random() * 0.6 + 0.2;
+                this.size  = Math.random() * 3 + 1;
+                this.life  = Math.random() * 120 + 60;
+                this.age   = 0;
+                // Color: entre rojo-naranja-amarillo
+                const t = Math.random();
+                if (t < 0.5)      this.color = `${213},${Math.floor(14+t*80)},${Math.floor(t*30)}`;
+                else if (t < 0.8) this.color = `${230},${Math.floor(80+t*60)},10`;
+                else               this.color = `${250},${Math.floor(200+t*30)},20`;
+            }
+
+            update() {
+                this.x += this.vx + Math.sin(this.age * 0.05) * 0.4;
+                this.y += this.vy;
+                this.vy -= 0.015;            // aceleración hacia arriba
+                this.size -= 0.025;
+                this.alpha -= 1 / this.life;
+                this.age++;
+                if (this.age >= this.life || this.size <= 0) this.reset();
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = Math.max(0, this.alpha);
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, Math.max(0, this.size), 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${this.color},${this.alpha})`;
+                ctx.shadowBlur  = 8;
+                ctx.shadowColor = `rgba(${this.color},0.5)`;
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        const NUM = 160;
+        const particulas = Array.from({ length: NUM }, () => {
+            const p = new Particula();
+            p.age = Math.random() * p.life; // iniciar en estados aleatorios
+            return p;
+        });
+
+        function loop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particulas.forEach(p => { p.update(); p.draw(); });
+            requestAnimationFrame(loop);
+        }
+        loop();
+
+        // ── GLITCH PERIÓDICO ──
+        const t1 = document.querySelector('.titulo-1');
+        function glitchPeriodico() {
+            t1.style.textShadow = `3px 0 var(--rojo), -3px 0 rgba(174,174,174,0.5)`;
+            t1.style.transform  = `translateX(${(Math.random()-0.5)*6}px)`;
+            setTimeout(() => {
+                t1.style.textShadow = '';
+                t1.style.transform  = '';
+            }, 80);
+        }
+        setInterval(glitchPeriodico, 3500 + Math.random() * 2000);
+
+        // ── NAVEGACIÓN AL HACER CLIC ──
+        const flash = document.getElementById('flash');
+
+        function irAlInicio(e) {
+            // Ripple en punto de clic
+            const ripple = document.createElement('div');
+            ripple.style.cssText = `
+                position:fixed; border-radius:50%;
+                width:10px; height:10px;
+                left:${e.clientX - 5}px; top:${e.clientY - 5}px;
+                background:var(--rojo); z-index:9900;
+                animation: rippleOut 0.6s ease forwards;
+                pointer-events:none;
+            `;
+            document.body.appendChild(ripple);
+            setTimeout(() => ripple.remove(), 700);
+
+            // Flash y redirige
+            flash.classList.add('activo');
+            setTimeout(() => {
+                window.location.href = 'inicio.html';
+            }, 420);
+        }
+
+        document.getElementById('portada').addEventListener('click', irAlInicio);
+
+        // Ripple keyframe dinámico
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes rippleOut {
+                to { width:200vmax; height:200vmax; left:${0}px; top:${0}px; opacity:0;
+                     transform:translate(-50%,-50%); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // ── CANVAS ESPEJO ──
+        const cEspejo = document.getElementById('canvas-espejo');
+        const ctxE    = cEspejo.getContext('2d');
+        const img     = new Image();
+        img.src       = 'imagenes/index.jpg';
+
+        let parallaxX = 0, parallaxY = 0;
+        let targetPX  = 0, targetPY  = 0;
+        // zoom lento (same feeling as the removed lentoBoom keyframe)
+        let zoom = 1.0, zoomDir = 1;
+
+        document.addEventListener('mousemove', e => {
+            targetPX = (e.clientX / window.innerWidth  - 0.5) * 18;
+            targetPY = (e.clientY / window.innerHeight - 0.5) * 10;
+        });
+
+        function resizeEspejo() {
+            cEspejo.width  = window.innerWidth;
+            cEspejo.height = window.innerHeight;
+        }
+        resizeEspejo();
+        window.addEventListener('resize', resizeEspejo);
+
+        function dibujarEspejo() {
+            if (!img.complete) { requestAnimationFrame(dibujarEspejo); return; }
+
+            const W = cEspejo.width;
+            const H = cEspejo.height;
+
+            // Parallax suave
+            parallaxX += (targetPX - parallaxX) * 0.06;
+            parallaxY += (targetPY - parallaxY) * 0.06;
+
+            // Zoom lento oscilante
+            zoom += zoomDir * 0.0003;
+            if (zoom > 1.06) zoomDir = -1;
+            if (zoom < 1.00) zoomDir =  1;
+
+            ctxE.clearRect(0, 0, W, H);
+
+            // Cuánto espacio ocupa la imagen central (vertical → limitada por alto)
+            const imgAR  = img.naturalWidth / img.naturalHeight;
+            const screenAR = W / H;
+
+            let imgW, imgH;
+            if (imgAR < screenAR) {
+                // imagen más estrecha que pantalla → ajustar por alto
+                imgH = H * zoom;
+                imgW = imgH * imgAR;
+            } else {
+                imgW = W * 0.42 * zoom;   // ocupa ~42% del ancho central
+                imgH = imgW / imgAR;
+                if (imgH < H) { imgH = H * zoom; imgW = imgH * imgAR; }
+            }
+
+            const cx = W / 2 + parallaxX;
+            const cy = H / 2 + parallaxY;
+
+            // ── ESPEJO IZQUIERDO (imagen invertida horizontalmente, más oscura) ──
+            ctxE.save();
+            ctxE.translate(cx - imgW / 2, cy - imgH / 2);
+            ctxE.scale(-1, 1);
+            ctxE.translate(-imgW, 0);
+            ctxE.globalAlpha = 0.28;
+            ctxE.drawImage(img, -imgW * 0.92, 0, imgW, imgH);  // desplazada al lado izquierdo
+            ctxE.restore();
+
+            // ── ESPEJO DERECHO (imagen invertida horizontalmente, más oscura) ──
+            ctxE.save();
+            ctxE.translate(cx + imgW / 2, cy - imgH / 2);
+            ctxE.scale(-1, 1);
+            ctxE.globalAlpha = 0.28;
+            ctxE.drawImage(img, 0.92 * imgW, 0, imgW, imgH);   // desplazada al lado derecho... espejo inverso
+            ctxE.restore();
+
+            // ── IMAGEN CENTRAL ──
+            ctxE.save();
+            ctxE.globalAlpha = 0.55;
+            ctxE.drawImage(img, cx - imgW / 2, cy - imgH / 2, imgW, imgH);
+            ctxE.restore();
+
+            // ── OVERLAY ESCALA DE GRISES + CONTRASTE via composite ──
+            // Grises: saturation filter via CSS en el canvas directamente
+            // (aplicado en CSS abajo — más performante)
+
+            requestAnimationFrame(dibujarEspejo);
+        }
+
+        img.onload = dibujarEspejo;
+        if (img.complete) dibujarEspejo();
+    </script>
+</body>
+</html>

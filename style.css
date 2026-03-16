@@ -1,0 +1,2916 @@
+:root {
+    --rojo: #d50e3c;
+    --negro: #000000;
+    --gris: #aeaeae;
+    --blanco: #ffffff;
+    
+    /* NUEVAS TIPOGRAFÍAS */
+    --font-titulos: 'Bebas Neue', sans-serif;
+    --font-texto: 'Gotham', 'Montserrat', sans-serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--negro);
+    color: var(--blanco);
+    font-family: var(--font-texto); /* Aplicamos Gotham al texto general */
+    overflow-x: hidden;
+}
+
+/* Aplicamos Bebas Neue a todos los títulos */
+h1, h2, h3, .logo, .hero-title, .editorial-titulo, .texto-cinta, .image-label {
+    font-family: var(--font-titulos);
+    text-transform: uppercase;
+    letter-spacing: 1px; /* Bebas suele verse mejor con un poco de espacio */
+}
+
+/* Navegación */
+header {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 5%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(174, 174, 174, 0.2);
+    z-index: 1000;
+    /* Transición suave para cuando aparezca/desaparezca */
+    transition: transform 0.4s ease, background 0.4s ease;
+}
+
+/* Clase que se agrega con JS para ocultar la barra hacia arriba */
+header.navbar-hidden {
+    transform: translateY(-100%);
+}
+
+header.scrolled {
+    padding: 10px 5%;
+    background: rgba(0, 0, 0, 0.95);
+    border-bottom: 1px solid var(--rojo);
+}
+
+.logo {
+    font-size: 2.2rem; /* Bebas Neue es más estrecha, la agrandamos un poco */
+    letter-spacing: 2px;
+}
+
+.logo span {
+    color: var(--rojo);
+}
+
+/* Botón Hamburguesa (Oculto en PC) */
+.menu-toggle {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 6px;
+    z-index: 1001; /* Por encima del menú al abrirlo */
+}
+
+.menu-toggle .bar {
+    width: 30px;
+    height: 3px;
+    background-color: var(--blanco);
+    transition: all 0.3s ease;
+}
+
+.nav-links {
+    list-style: none;
+    display: flex;
+    gap: 30px;
+}
+
+.nav-links a {
+    font-family: var(--font-titulos); /* Bebas en los links también */
+    color: var(--gris);
+    text-decoration: none;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+    color: var(--blanco);
+}
+/* --- HERO SECTION (SUPERPOSICIÓN TOTAL Y CORRECCIÓN DE CUADRO) --- */
+.hero {
+    position: relative;
+    height: 100vh;
+    display: flex;
+    align-items: center; /* Centra verticalmente */
+    padding: 0 5%;
+    background-color: var(--negro);
+    overflow: hidden; /* Clave para el texto gigante */
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10; /* TEXTO POR ENCIMA */
+}
+
+.hero-title {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(6rem, 18vw, 20rem); /* Texto GIGANTE para que cruce la imagen */
+    line-height: 0.8;
+    text-transform: uppercase;
+    white-space: nowrap; /* Fuerza a que el texto cruce la pantalla */
+    margin-bottom: 20px;
+}
+
+.outline {
+    color: transparent;
+    -webkit-text-stroke: 3px var(--blanco); /* Contorno más grueso para impacto */
+}
+
+.filled {
+    color: var(--blanco);
+}
+
+.subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
+    color: var(--gris);
+    letter-spacing: 2px;
+    font-weight: 300;
+    max-width: 600px;
+}
+
+.hero-image {
+    position: absolute;
+    right: 5%; /* Pega la imagen a la derecha */
+    top: 50%;
+    transform: translateY(-50%); /* Centra la caja verticalmente */
+    width: 38%; /* Ancho proporcional */
+    height: 70vh; /* Altura del cuadro */
+    border: 10px solid var(--rojo); /* El marco rojo */
+    z-index: 1; /* IMAGEN POR DEBAJO */
+    display: flex; /* Asegura el encuadre interno */
+    justify-content: center;
+    align-items: center;
+}
+
+.hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+    transition: filter 0.5s ease;
+}
+
+.hero-image:hover img { 
+    filter: grayscale(0%); 
+}
+
+.image-label {
+    position: absolute;
+    bottom: -35px;
+    left: -10px; /* Alinea con el borde izquierdo rojo */
+    background: var(--rojo);
+    color: var(--blanco);
+    padding: 5px 15px;
+    font-size: 1rem;
+    font-family: 'Archivo Black', sans-serif;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-20px); }
+    60% { transform: translateY(-10px); }
+}
+
+/* --- RESPONSIVIDAD (IMPORTANTE) --- */
+@media (max-width: 1024px) {
+    .hero-image {
+        width: 45%;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+        justify-content: center;
+    }
+    .hero-title {
+        font-size: clamp(4rem, 15vw, 8rem);
+        white-space: normal; /* Permitimos salto de línea en móvil */
+    }
+    .hero-image {
+        position: relative;
+        width: 90%;
+        height: 40vh;
+        right: 0;
+        top: 0;
+        transform: none;
+        margin-top: 40px;
+    }
+}
+
+/* --- CSS DE LA GALERÍA ASIMÉTRICA --- */
+
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.modal.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.modal-content {
+    position: relative;
+    max-width: 90%;
+    max-height: 90vh;
+}
+
+.modal-content img {
+    max-width: 100%;
+    max-height: 90vh;
+    border: 1px solid var(--rojo);
+    box-shadow: 0 0 30px rgba(213, 14, 60, 0.2);
+}
+
+.close-btn {
+    position: absolute;
+    top: -40px;
+    right: 0;
+    color: var(--gris);
+    font-size: 2rem;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close-btn:hover {
+    color: var(--rojo);
+}
+/* --- SECCIÓN EDITORIAL (FONDO BLANCO Y CINTAS CORREGIDAS) --- */
+.editorial-section {
+    background-color: var(--blanco);
+    color: var(--negro);
+    position: relative;
+    /* Eliminamos overflow: hidden para que las cintas puedan sobresalir */
+    z-index: 20;
+    scroll-margin-top: 100px; /* ESTO ARREGLA EL MENÚ: Frena el scroll antes de chocar con la navbar */
+}
+
+/* Contenedor del texto editorial */
+.editorial-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 150px 5%; /* Aumentamos el padding para dar espacio a las cintas absolutas */
+    text-align: center;
+}
+
+.editorial-titulo {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(3rem, 8vw, 5rem);
+    color: var(--negro);
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+
+.editorial-texto {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: #333;
+    margin-bottom: 20px;
+    font-weight: 400;
+}
+
+/* Estilo base de las cintas */
+.cinta {
+    width: 120vw; /* Más anchas para que los bordes queden fuera de la pantalla */
+    left: -10vw; /* Centrado del excedente */
+    padding: 15px 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    position: absolute; /* CLAVE: Las hacemos flotar exactamente en los bordes */
+    z-index: 10;
+}
+
+/* Cinta superior */
+.cinta-arriba {
+    background-color: var(--rojo);
+    color: var(--blanco);
+    transform: rotate(-2deg);
+    top: -25px; /* Sube la cinta para tapar la costura recta entre el Hero y el Manifiesto */
+}
+
+/* Cinta inferior */
+.cinta-abajo {
+    background-color: #a3082a;
+    color: var(--blanco);
+    transform: rotate(2deg);
+    bottom: -25px; /* Baja la cinta para tapar la costura hacia la Galería */
+}
+
+/* Contenedor de la animación infinita */
+.cinta-movimiento {
+    display: flex;
+    white-space: nowrap;
+    animation: moverCinta 20s linear infinite;
+}
+
+.cinta-movimiento.reverso {
+    animation: moverCintaReversa 25s linear infinite;
+}
+
+/* Estilo del texto en la cinta */
+.texto-cinta {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 2rem;
+    padding-right: 50px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Separadores en la cinta (//) */
+.texto-cinta span {
+    color: rgba(255, 255, 255, 0.5);
+    margin-left: 50px;
+}
+
+.cinta-arriba .texto-cinta span {
+    color: rgba(0, 0, 0, 0.4); 
+}
+
+/* Animaciones */
+@keyframes moverCinta {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+@keyframes moverCintaReversa {
+    0% { transform: translateX(-50%); }
+    100% { transform: translateX(0); }
+}
+
+/* Ajustes responsivos para móviles */
+@media (max-width: 768px) {
+    .texto-cinta {
+        font-size: 1.5rem;
+    }
+    .editorial-content {
+        padding: 100px 5%;
+    }
+}
+/* --- RESPONSIVIDAD: MENÚ MÓVIL --- */
+@media (max-width: 768px) {
+    /* Mostramos el botón de hamburguesa */
+    .menu-toggle {
+        display: flex;
+    }
+
+    /* Convertimos los links en un menú lateral deslizable */
+    .nav-links {
+        position: fixed;
+        top: 0;
+        right: -100%; /* Oculto fuera de la pantalla */
+        width: 70%;
+        height: 100vh;
+        background-color: var(--negro);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 40px;
+        transition: right 0.4s ease;
+        border-left: 2px solid var(--rojo);
+    }
+
+    /* Clase activa para mostrar el menú */
+    .nav-links.active {
+        right: 0;
+    }
+
+    .nav-links a {
+        font-size: 2rem;
+    }
+
+    /* Animación del botón hamburguesa transformándose en una "X" */
+    .menu-toggle.active .bar:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+    }
+    .menu-toggle.active .bar:nth-child(2) {
+        opacity: 0;
+    }
+    .menu-toggle.active .bar:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+    }
+}
+/* ========================================= */
+/* --- ESTILOS PARA LA PÁGINA DE DETALLE --- */
+/* ========================================= */
+
+.proyecto-main {
+    padding-top: 120px; /* Espacio para que no lo tape la barra de navegación */
+    background-color: var(--negro);
+    color: var(--blanco);
+    min-height: 100vh;
+}
+
+/* Hero del Proyecto */
+
+.proyecto-titulo {
+    font-size: clamp(5rem, 15vw, 12rem);
+    line-height: 0.8;
+    text-align: center;
+    z-index: 10;
+    margin-bottom: -5vw; /* Hace que el título se encime en la imagen de abajo */
+    
+}
+
+.proyecto-titulo .outline {
+    /* Bajamos el grosor de 2px (o 3px) a solo 1px. 
+       Esto lo hace mucho más fino, elegante y menos saturado. */
+    -webkit-text-stroke-width: 0.1px; 
+}
+
+/* Ficha Técnica (Meta) */
+
+.meta-item h3 {
+    color: var(--rojo);
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+.meta-item p {
+    color: var(--blanco);
+    font-size: 1rem;
+    font-family: var(--font-texto);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Descripción */
+
+/* Imagen Full Width */
+
+/* Botón de regreso */
+
+.btn-regresar {
+    display: inline-block;
+    font-family: var(--font-titulos);
+    font-size: 2rem;
+    color: var(--blanco);
+    text-decoration: none;
+    border: 2px solid var(--rojo);
+    padding: 15px 40px;
+    transition: all 0.3s ease;
+}
+
+.btn-regresar:hover {
+    background-color: var(--rojo);
+    color: var(--negro);
+}
+
+/* Responsividad de la página de detalle */
+@media (max-width: 768px) {
+}
+/* ========================================= */
+/* --- FOOTER / CONTACTO --- */
+/* ========================================= */
+.footer {
+    background-color: var(--negro);
+    border-top: 3px solid var(--rojo); /* Línea roja gruesa para separar */
+    padding: 80px 5% 40px 5%;
+    position: relative;
+    z-index: 10;
+}
+
+.footer-top {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Permite que se acomode en celulares */
+    gap: 50px;
+    margin-bottom: 60px;
+}
+
+.footer-title {
+    font-family: var(--font-titulos);
+    font-size: clamp(4rem, 10vw, 8rem);
+    line-height: 0.85;
+    margin: 0;
+    color: var(--blanco);
+}
+
+.footer-title .text-red {
+    color: var(--rojo);
+}
+
+.footer-links {
+    display: flex;
+    gap: 80px;
+    flex-wrap: wrap;
+}
+
+.link-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.link-column h3 {
+    font-family: var(--font-titulos);
+    font-size: 1.5rem;
+    color: var(--gris);
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.link-column a {
+    font-family: var(--font-texto);
+    color: var(--blanco);
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+    text-transform: uppercase;
+    font-weight: 300;
+}
+
+.link-column a:hover {
+    color: var(--rojo);
+    transform: translateX(5px); /* Pequeño empujón al pasar el mouse */
+}
+
+/* Parte inferior del footer (Copyright y Botón) */
+.footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid rgba(174, 174, 174, 0.2); /* Línea gris sutil */
+    padding-top: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.footer-bottom p {
+    font-family: var(--font-texto);
+    color: var(--gris);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.back-to-top {
+    font-family: var(--font-titulos);
+    color: var(--rojo);
+    text-decoration: none;
+    font-size: 1.5rem;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.back-to-top:hover {
+    color: var(--blanco);
+}
+
+/* Responsividad para Móviles */
+@media (max-width: 768px) {
+    .footer-top {
+        flex-direction: column;
+    }
+    .footer-links {
+        gap: 40px;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+/* ========================================= */
+/* --- GALERÍA (FLEXBOX ACCORDION TIPO VIDEO) --- */
+/* ========================================= */
+.galeria-section {
+    padding: 100px 5%;
+    background-color: var(--negro);
+}
+
+.accordion-contenedor {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* Separación entre las 3 filas */
+}
+
+.galeria-accordion {
+    display: flex;
+    width: 100%;
+    height: 400px; /* Altura de cada fila */
+    gap: 15px; /* Separación entre las fotos de una misma fila */
+}
+
+/* El estado "Contraído" (Por defecto) */
+/* El estado "Contraído" (Por defecto) */
+.accordion-item {
+    position: relative;
+    flex: 1; 
+    overflow: hidden;
+    cursor: pointer;
+    text-decoration: none;
+    background-color: #111;
+    border: 1px solid rgba(174, 174, 174, 0.2);
+    
+    /* Lo regresamos a un tiempo fluido pero no eterno (1.2s está perfecto) */
+    transition: flex 1.2s ease-in-out, border-color 0.8s ease;
+}
+
+/* El estado "Expandido" (Al pasar el mouse) */
+.accordion-item:hover {
+    flex: 3; 
+    border-color: var(--rojo); 
+    
+    /* 👇 LA SOLUCIÓN: El navegador espera 0.15s antes de empezar a expandir */
+    transition-delay: 0.15s; 
+}
+
+.accordion-img {
+    position: absolute;
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) brightness(0.4); 
+    /* Cambiamos esto también para que empate perfecto */
+    transition: all 1.2s ease-in-out;
+}
+
+.accordion-item:hover .accordion-img {
+    filter: grayscale(0%) brightness(1); /* A color y luz completa al expandir */
+}
+
+/* Oscurecemos un poco la parte inferior para que el texto se lea siempre */
+.accordion-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 40%);
+    pointer-events: none;
+}
+
+/* Los textos dentro de la caja */
+.accordion-content {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    white-space: nowrap; /* ESTO ES CLAVE: Evita que el título se parta en dos renglones */
+    overflow: hidden; /* Oculta lo que no cabe */
+}
+
+.acc-num {
+    font-family: var(--font-titulos);
+    font-size: 2rem;
+    color: var(--gris);
+    transition: color 0.4s ease;
+}
+
+.acc-titulo {
+    font-family: var(--font-titulos);
+    font-size: 2.5rem;
+    color: var(--blanco);
+    opacity: 0; /* Título invisible cuando está contraído */
+    transform: translateY(20px); /* Ligeramente abajo */
+    transition: all 0.6s ease;
+}
+
+.accordion-item:hover .acc-num {
+    color: var(--rojo); /* El número se vuelve rojo */
+}
+
+.accordion-item:hover .acc-titulo {
+    opacity: 1; /* El título aparece */
+    transform: translateY(0); /* Sube a su posición original */
+}
+
+/* Animaciones de entrada (ya las tenías) */
+.fade-in {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- RESPONSIVIDAD PARA CELULARES --- */
+@media (max-width: 768px) {
+    .galeria-accordion {
+        flex-direction: column; /* En móvil las fotos se apilan verticalmente */
+        height: 70vh; /* La fila ocupa gran parte de la pantalla */
+    }
+    .accordion-item:hover {
+        flex: 3; /* No se expanden tanto en vertical para no perderse */
+    }
+    .acc-titulo {
+        font-size: 1.8rem;
+    }
+}
+
+/* --- MODIFICADORES PARA INVERTIR CINTAS --- */
+.cinta-arriba.invertida {
+    transform: rotate(2deg); /* Inclinación opuesta a la original (-2deg) */
+}
+
+.cinta-abajo.invertida {
+    transform: rotate(-2deg); /* Inclinación opuesta a la original (2deg) */
+}
+/* ========================================= */
+/* --- PÁGINA DE CONTACTO --- */
+/* ========================================= */
+
+.contacto-main {
+    padding-top: 150px;
+    background-color: var(--negro);
+    min-height: 100vh;
+}
+
+/* --- Título Gigante de Contacto --- */
+.contacto-header {
+    text-align: center;
+    position: relative;
+    z-index: 10; 
+    /* AQUÍ ESTÁ LA MAGIA: Un margen positivo grande para separar ambas partes */
+    margin-bottom: 150px; 
+}
+
+/* Devolvemos el color blanco sólido y brillante a la palabra FUEGO */
+.contacto-header .filled {
+    color: var(--blanco); 
+}
+
+/* --- Cuadrícula de Contacto --- */
+.contacto-contenedor {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    padding: 0 5% 100px 5%;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10; 
+}
+
+/* Columna de Información */
+.contacto-info h2 {
+    font-family: var(--font-titulos);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    margin-bottom: 20px;
+    line-height: 1.1;
+    color: var(--blanco);
+}
+
+.contacto-info .text-red {
+    color: var(--rojo);
+}
+
+.contacto-info p {
+    font-family: var(--font-texto);
+    font-size: 1.2rem;
+    color: var(--gris);
+    line-height: 1.6;
+    margin-bottom: 40px;
+    max-width: 90%;
+}
+
+.info-detalles h3 {
+    color: var(--rojo);
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+    margin-top: 30px;
+}
+
+.info-detalles a {
+    display: block;
+    color: var(--blanco);
+    text-decoration: none;
+    font-size: 1.5rem;
+    font-family: var(--font-titulos);
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+    transition: color 0.3s, transform 0.3s;
+}
+
+.info-detalles a:hover {
+    color: var(--rojo);
+    transform: translateX(10px); /* El enlace se desliza a la derecha al hacer hover */
+}
+
+/* Formulario Brutalista */
+.contacto-form {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-group label {
+    font-family: var(--font-titulos);
+    font-size: 1.5rem;
+    color: var(--gris);
+    letter-spacing: 1px;
+}
+
+/* Estilo de los campos de texto */
+.contacto-form input,
+.contacto-form textarea {
+    background-color: transparent;
+    border: 1px solid var(--gris);
+    color: var(--blanco);
+    font-family: var(--font-texto);
+    padding: 15px;
+    font-size: 1rem;
+    border-radius: 0; /* Sin bordes redondeados (Brutalismo) */
+    transition: all 0.3s ease;
+}
+
+/* Efecto al hacer clic para escribir */
+.contacto-form input:focus,
+.contacto-form textarea:focus {
+    outline: none;
+    border-color: var(--rojo);
+    background-color: rgba(213, 14, 60, 0.05); /* Fondo rojo súper transparente */
+    box-shadow: 6px 6px 0px var(--rojo); /* Sombra sólida y dura estilo cómic/revista */
+    transform: translate(-3px, -3px); /* Levanta el input visualmente */
+}
+
+/* Botón de Enviar */
+.btn-enviar {
+    background-color: transparent;
+    color: var(--blanco);
+    border: 2px solid var(--blanco);
+    font-family: var(--font-titulos);
+    font-size: 2rem;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    text-transform: uppercase;
+}
+
+.btn-enviar:hover {
+    background-color: var(--rojo);
+    border-color: var(--rojo);
+    color: var(--negro);
+    transform: scale(1.02);
+}
+
+/* Responsividad: Se apila en celulares */
+@media (max-width: 800px) {
+    .contacto-contenedor {
+        grid-template-columns: 1fr;
+        gap: 60px;
+    }
+    .contacto-info p {
+        max-width: 100%;
+    }
+}
+/* ========================================= */
+/* --- NUEVO DISEÑO PARA DETALLE DE PROYECTO --- */
+/* ========================================= */
+
+.detalle-main {
+    padding-top: 100px;
+    background-color: var(--negro);
+    color: var(--blanco);
+    min-height: 100vh;
+}
+
+/* ========== ANIMACIONES GLOBALES ========== */
+
+/* Animación de aparición al hacer scroll */
+@keyframes revealFromBottom {
+    0% {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.reveal-text {
+    animation: revealFromBottom 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    opacity: 0; /* Inicia invisible */
+}
+
+.delay-1 {
+    animation-delay: 0.3s;
+}
+
+.delay-2 {
+    animation-delay: 0.6s;
+}
+
+/* Efecto GLITCH para textos */
+
+/* ========== HERO SECTION ========== */
+
+.detalle-hero {
+    padding: 40px 5% 80px 5%;
+    overflow: hidden;
+}
+
+/* Columna del Título */
+
+/* Meta con animación escalonada */
+
+/* ========== ANIMACIÓN DE MARCOS ========== */
+
+/* Diferentes velocidades para cada marco */
+
+/* ========== SECCIÓN MANIFIESTO ========== */
+
+.detalle-manifiesto {
+    padding: 100px 5%;
+    background-color: var(--blanco);
+    color: var(--negro);
+    position: relative;
+    z-index: 5;
+    border-top: 4px solid var(--rojo);
+    border-bottom: 4px solid var(--rojo);
+    overflow: hidden;
+}
+
+/* Efecto de barrido rojo al fondo */
+.detalle-manifiesto::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(213, 14, 60, 0.1), transparent);
+    animation: sweep 8s infinite;
+    z-index: 1;
+}
+
+@keyframes sweep {
+    0% { left: -100%; }
+    20% { left: 100%; }
+    100% { left: 100%; }
+}
+
+.manifiesto-contenedor {
+    max-width: 1000px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.manifiesto-texto-grande {
+    font-family: var(--font-titulos);
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.1;
+    text-transform: uppercase;
+    color: var(--negro);
+    margin-bottom: 40px;
+    border-bottom: 2px solid var(--rojo);
+    padding-bottom: 20px;
+    transform-origin: left;
+}
+
+.manifiesto-texto-grande .text-red {
+    color: var(--rojo);
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.manifiesto-texto-grande:hover .text-red {
+    transform: skewX(-10deg) scale(1.1);
+}
+
+.manifiesto-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+}
+
+.manifiesto-grid p {
+    font-family: var(--font-texto);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.manifiesto-grid p:hover {
+    color: var(--rojo);
+}
+
+/* ========== SECCIÓN EXPLOSIÓN ========== */
+
+.detalle-explosion {
+    padding: 100px 5%;
+    background-color: var(--negro);
+    overflow: hidden;
+}
+
+.explosion-titulo {
+    font-family: var(--font-titulos);
+    font-size: clamp(3rem, 8vw, 6rem);
+    text-align: center;
+    margin-bottom: 60px;
+    color: var(--blanco);
+}
+
+.explosion-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Efecto 3D en las cards */
+.card-hover-3d {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    overflow: hidden;
+    border: 2px solid var(--gris);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.card-hover-3d:hover {
+    transform: rotateY(5deg) rotateX(5deg) scale(1.05);
+    border-color: var(--rojo);
+    box-shadow: -10px 10px 20px rgba(213, 14, 60, 0.3);
+    z-index: 10;
+}
+
+.explosion-item-destacado {
+    transform: translateY(-20px);
+    border-color: var(--rojo);
+    border-width: 3px;
+    animation: float 3s infinite ease-in-out;
+}
+
+.card-hover-3d img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) brightness(0.7);
+    transition: all 0.5s ease;
+}
+
+.card-hover-3d:hover img {
+    filter: grayscale(0%) brightness(1);
+    transform: scale(1.1);
+}
+
+.card-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, transparent 50%, rgba(213, 14, 60, 0.2));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.card-hover-3d:hover .card-overlay {
+    opacity: 1;
+}
+
+.explosion-label {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--rojo);
+    color: var(--blanco);
+    font-family: var(--font-titulos);
+    font-size: 1rem;
+    padding: 10px;
+    text-align: center;
+    letter-spacing: 1px;
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.card-hover-3d:hover .explosion-label {
+    transform: translateY(0);
+}
+
+/* ========== BOTÓN ELÉCTRICO ========== */
+
+.detalle-navegacion {
+    text-align: center;
+    padding: 60px 5% 100px 5%;
+}
+
+.btn-regresar-brutal {
+    display: inline-block;
+    font-family: var(--font-titulos);
+    font-size: 2.2rem;
+    color: var(--blanco);
+    text-decoration: none;
+    padding: 20px 50px;
+    border: 3px solid var(--rojo);
+    background-color: transparent;
+    box-shadow: 8px 8px 0px var(--rojo);
+    transition: all 0.2s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Efecto eléctrico */
+.electric-hover::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: conic-gradient(transparent, rgba(213, 14, 60, 0.3), transparent 30%);
+    animation: rotate 4s linear infinite;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.electric-hover:hover::before {
+    opacity: 1;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.electric-hover:hover {
+    background-color: var(--rojo);
+    color: var(--negro);
+    box-shadow: 0px 0px 20px var(--rojo);
+    transform: translate(8px, 8px);
+}
+
+/* ========== RESPONSIVIDAD ========== */
+
+@media (max-width: 900px) {
+    @keyframes slideInLeft {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .manifiesto-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    .explosion-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .explosion-item-destacado {
+        transform: translateY(0);
+        animation: none; /* Quitamos float en móvil */
+    }
+    .btn-regresar-brutal {
+        font-size: 1.5rem;
+        padding: 15px 30px;
+    }
+}
+/* ========================================= */
+/* --- REDISEÑO HERO DETALLES CON ANIMACIONES --- */
+/* ========================================= */
+
+.detalle-hero-nuevo {
+    padding: 60px 5% 100px 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 60px;
+    overflow: hidden;
+}
+
+/* --- Animación del Título Principal --- */
+.titulo-masivo {
+    font-family: var(--font-titulos);
+    font-size: clamp(5rem, 18vw, 15rem);
+    line-height: 0.85;
+    margin: 0;
+    text-transform: uppercase;
+    display: flex;
+    flex-direction: column;
+}
+
+.titulo-masivo .outline {
+    -webkit-text-stroke: 0.1px var(--blanco);
+    color: transparent;
+}
+
+.linea-revelar {
+    display: block;
+    overflow: hidden; /* Oculta el texto antes de que suba */
+}
+
+.linea-revelar span {
+    display: block;
+    transform: translateY(110%);
+    animation: revelarArriba 1s cubic-bezier(0.77, 0, 0.175, 1) forwards;
+}
+
+/* Retraso para la segunda palabra */
+.linea-revelar:nth-child(2) span {
+    animation-delay: 0.2s;
+}
+
+@keyframes revelarArriba {
+    to { transform: translateY(0); }
+}
+
+/* --- Animación de los Datos (Meta) --- */
+.meta-horizontal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    font-family: var(--font-titulos);
+    color: var(--gris);
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.meta-fade {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: desvanecerArriba 0.8s ease forwards;
+}
+
+.meta-fade:nth-child(1) { animation-delay: 0.6s; }
+.meta-fade:nth-child(2) { animation-delay: 0.7s; }
+.meta-fade:nth-child(3) { animation-delay: 0.8s; }
+.meta-fade:nth-child(4) { animation-delay: 0.9s; }
+
+@keyframes desvanecerArriba {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Animación de Cortina para la Imagen --- */
+.hero-imagen-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    height: 65vh;
+    overflow: hidden;
+    /* La máscara inicia en el centro horizontalmente */
+    clip-path: polygon(0 50%, 100% 50%, 100% 50%, 0 50%);
+    animation: revelarCortina 1.2s cubic-bezier(0.77, 0, 0.175, 1) 0.8s forwards,
+               latidoSombra 4s infinite alternate 2s; /* El latido inicia después de revelar */
+    border: 3px solid transparent;
+    transition: all 0.4s ease;
+}
+
+@keyframes revelarCortina {
+    to { 
+        clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); 
+        border-color: var(--rojo); 
+    }
+}
+
+@keyframes latidoSombra {
+    from { 
+        box-shadow: 0px 0px 0px rgba(213, 14, 60, 0); 
+        transform: translateY(0); 
+    }
+    to { 
+        box-shadow: 0px 15px 40px rgba(213, 14, 60, 0.4); 
+        transform: translateY(-8px); 
+    }
+}
+
+/* Comportamiento interno de la imagen */
+.hero-imagen-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%) brightness(0.7);
+    transform: scale(1.3); /* Inicia con zoom */
+    animation: alejarImagen 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.8s forwards;
+    transition: all 0.6s ease;
+}
+
+@keyframes alejarImagen {
+    to { transform: scale(1); }
+}
+
+.hero-imagen-wrapper:hover img {
+    filter: grayscale(0%) brightness(1);
+    transform: scale(1.05); /* Pequeño zoom al pasar el mouse */
+}
+/* ========================================= */
+/* --- DISEÑO V3: CAOS EDITORIAL / Z-INDEX --- */
+/* ========================================= */
+.detalle-v3-main {
+    background-color: var(--negro);
+    color: var(--blanco);
+    position: relative;
+    overflow: hidden; /* Para que la marca de agua no genere scroll horizontal */
+    padding-top: 120px;
+    padding-bottom: 150px;
+}
+
+/* --- Marca de agua fija en el fondo --- */
+.fondo-marca-agua {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-family: var(--font-titulos);
+    font-size: 35vw; /* Texto ridículamente grande */
+    color: rgba(255, 255, 255, 0.03); /* Apenas visible */
+    z-index: 0;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* --- Hero Superpuesto --- */
+.v3-hero-superpuesto {
+    position: relative;
+    z-index: 10;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    min-height: 80vh;
+}
+
+.v3-caja-titulo {
+    position: absolute;
+    left: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 20; 
+    /* LA MAGIA: El texto invierte los colores de lo que esté debajo */
+    mix-blend-mode: difference; 
+}
+
+.v3-titulo-caos {
+    font-family: var(--font-titulos);
+    font-size: clamp(5rem, 15vw, 15rem);
+    line-height: 0.8;
+    margin: 0;
+    color: var(--blanco);
+}
+
+.v3-etiqueta-flotante {
+    background-color: var(--rojo);
+    color: var(--blanco);
+    font-family: var(--font-titulos);
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1.5rem;
+    margin-top: 20px;
+    transform: rotate(-5deg); /* Inclinación agresiva */
+    box-shadow: 5px 5px 0px var(--blanco);
+    mix-blend-mode: normal; /* Para que la etiqueta no se invierta */
+}
+
+.v3-caja-imagen {
+    position: relative;
+    width: 60%;
+    margin-left: auto; /* Empuja la imagen hacia la derecha */
+    z-index: 10;
+}
+
+.v3-caja-imagen img {
+    width: 100%;
+    height: 70vh;
+    object-fit: cover;
+    filter: grayscale(100%) contrast(1.2);
+    position: relative;
+    z-index: 2;
+    transition: filter 0.5s ease;
+}
+
+.v3-caja-imagen:hover img {
+    filter: grayscale(0%) contrast(1.2);
+}
+
+/* Marco desfasado rojo */
+.v3-marco-desfasado {
+    position: absolute;
+    top: 40px;
+    left: -40px;
+    width: 100%;
+    height: 100%;
+    border: 4px solid var(--rojo);
+    z-index: 1; /* Detrás de la foto */
+    transition: all 0.4s ease;
+}
+
+.v3-caja-imagen:hover .v3-marco-desfasado {
+    top: 20px;
+    left: -20px;
+    background-color: rgba(213, 14, 60, 0.2);
+}
+
+/* --- Grilla Editorial Rota --- */
+.v3-grilla-editorial {
+    max-width: 1400px;
+    margin: 150px auto 100px auto;
+    padding: 0 5%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    position: relative;
+    z-index: 10;
+}
+
+.v3-columna-texto {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.v3-subtitulo {
+    font-family: var(--font-titulos);
+    font-size: clamp(3rem, 6vw, 6rem);
+    line-height: 0.9;
+    margin-bottom: 30px;
+}
+
+.v3-columna-texto p {
+    font-family: var(--font-texto);
+    font-size: 1.2rem;
+    color: var(--gris);
+    line-height: 1.6;
+    margin-bottom: 50px;
+    max-width: 90%;
+}
+
+.v3-datos-tecnicos {
+    border-left: 5px solid var(--rojo);
+    padding-left: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.v3-dato {
+    font-family: var(--font-texto);
+    font-size: 1rem;
+    color: var(--blanco);
+    letter-spacing: 1px;
+}
+
+.v3-dato span {
+    font-family: var(--font-titulos);
+    color: var(--rojo);
+    font-size: 1.8rem;
+    margin-right: 15px;
+}
+
+/* Collage de imágenes */
+.v3-columna-imagenes {
+    position: relative;
+    min-height: 600px;
+}
+
+.v3-img-wrap {
+    position: absolute;
+    border: 3px solid var(--gris);
+    transition: all 0.4s ease;
+}
+
+.v3-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(100%);
+    transition: filter 0.4s ease;
+}
+
+.v3-img-wrap:hover {
+    z-index: 10; /* Al pasar el mouse, la foto pasa al frente */
+    border-color: var(--rojo);
+    transform: scale(1.05);
+    box-shadow: -10px 10px 30px rgba(0,0,0,0.8);
+}
+
+.v3-img-wrap:hover img {
+    filter: grayscale(0%);
+}
+
+.img-1 {
+    width: 75%;
+    height: 450px;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.img-2 {
+    width: 65%;
+    height: 350px;
+    bottom: 20px;
+    right: 0;
+    z-index: 1; /* Inicia detrás de la foto 1 */
+    border-color: var(--rojo);
+}
+
+/* --- Botón Brutalista --- */
+.v3-navegacion-final {
+    text-align: center;
+    position: relative;
+    z-index: 10;
+}
+
+.v3-btn-bloque {
+    display: inline-block;
+    background-color: var(--blanco);
+    color: var(--negro);
+    font-family: var(--font-titulos);
+    font-size: clamp(2rem, 4vw, 3rem);
+    padding: 20px 50px;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+/* La sombra sólida que interactúa */
+.v3-btn-bloque::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    width: 100%;
+    height: 100%;
+    background-color: var(--rojo);
+    z-index: -1;
+    transition: all 0.2s ease;
+}
+
+.v3-btn-bloque:hover {
+    transform: translate(15px, 15px);
+    background-color: var(--rojo);
+    color: var(--blanco);
+}
+
+.v3-btn-bloque:hover::before {
+    transform: translate(-30px, -30px);
+    background-color: var(--blanco);
+}
+
+/* --- RESPONSIVIDAD --- */
+@media (max-width: 900px) {
+    .v3-hero-superpuesto {
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 50px;
+    }
+
+    .v3-caja-titulo {
+        position: relative;
+        left: 0;
+        top: 0;
+        transform: none;
+        mix-blend-mode: normal; /* Quitamos el difference en móvil por legibilidad */
+        margin-bottom: -40px; /* Hacemos que pise la imagen manualmente */
+        text-align: center;
+    }
+
+    .v3-etiqueta-flotante {
+        transform: rotate(0);
+    }
+
+    .v3-caja-imagen {
+        width: 90%;
+        margin: 0 auto;
+    }
+
+    .v3-caja-imagen img {
+        height: 50vh;
+    }
+
+    .v3-grilla-editorial {
+        grid-template-columns: 1fr;
+        gap: 80px;
+        margin-top: 80px;
+    }
+
+    .v3-columna-imagenes {
+        min-height: 500px;
+    }
+
+    .img-1, .img-2 {
+        width: 85%;
+    }
+}
+/* ========================================= */
+/* --- DETALLE MINIMAL: BRUTALISMO PURO --- */
+/* ========================================= */
+
+.detalle-minimal-main {
+    background-color: var(--negro);
+    color: var(--blanco);
+    padding-top: 100px;
+    overflow-x: hidden;
+}
+
+/* --- HERO MINIMAL --- */
+.minimal-hero {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.hero-contenedor {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.hero-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+    font-family: var(--font-titulos);
+    font-size: 1.2rem;
+    color: var(--gris);
+    letter-spacing: 2px;
+    opacity: 0;
+    animation: fadeIn 0.8s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.hero-titulo {
+    margin: 0 0 40px 0;
+}
+
+.titulo-linea {
+    display: block;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(5rem, 15vw, 12rem);
+    line-height: 0.85;
+    text-transform: uppercase;
+    color: var(--blanco);
+    opacity: 0;
+    transform: translateY(50px);
+    animation: subirLinea 0.8s 0.2s forwards;
+}
+
+.titulo-linea.titulo-rojo {
+    color: var(--rojo);
+    animation-delay: 0.4s;
+}
+
+@keyframes subirLinea {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-lineas {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--rojo) 0%, transparent 100%);
+    margin: 40px 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: expandirLinea 1s 0.6s forwards;
+}
+
+@keyframes expandirLinea {
+    to { transform: scaleX(1); }
+}
+
+.hero-inferior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+    animation: fadeIn 0.8s 0.8s forwards;
+}
+
+.hero-descripcion {
+    font-family: var(--font-texto);
+    font-size: 1rem;
+    color: var(--gris);
+    letter-spacing: 2px;
+}
+
+.hero-indicador {
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--rojo);
+    animation: rotar 4s linear infinite;
+}
+
+@keyframes rotar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* --- SECCIÓN MANIFIESTO --- */
+.minimal-manifiesto {
+    padding: 100px 5%;
+    background-color: var(--negro);
+    border-top: 1px solid rgba(213,14,60,0.2);
+    border-bottom: 1px solid rgba(213,14,60,0.2);
+}
+
+.manifiesto-contenedor {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.manifiesto-texto-grande {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.3;
+    text-transform: uppercase;
+    margin-bottom: 60px;
+    letter-spacing: -1px;
+}
+
+.manifiesto-separador {
+    width: 150px;
+    height: 4px;
+    background-color: var(--rojo);
+    margin: 40px 0;
+}
+
+.manifiesto-texto-pequeno {
+    font-family: var(--font-texto);
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: var(--gris);
+    max-width: 600px;
+    font-weight: 300;
+}
+
+/* --- SECCIÓN IMAGEN MINIMAL --- */
+.minimal-imagen {
+    padding: 80px 5%;
+}
+
+.imagen-marco {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    border: 2px solid var(--gris);
+    transition: all 0.5s ease;
+}
+
+.imagen-marco:hover {
+    border-color: var(--rojo);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(213,14,60,0.2);
+}
+
+.imagen-marco img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: grayscale(100%);
+    transition: filter 0.5s ease;
+}
+
+.imagen-marco:hover img {
+    filter: grayscale(0%);
+}
+
+.imagen-copyright {
+    position: absolute;
+    bottom: -30px;
+    right: 0;
+    font-family: var(--font-texto);
+    font-size: 0.8rem;
+    color: var(--gris);
+    display: flex;
+    gap: 20px;
+    letter-spacing: 1px;
+}
+
+/* --- SECCIÓN DATOS EN GRID --- */
+.minimal-datos {
+    padding: 100px 5%;
+    background-color: var(--negro);
+}
+
+.datos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+    border: 1px solid rgba(174,174,174,0.2);
+    padding: 60px;
+}
+
+.dato-item {
+    text-align: center;
+}
+
+.dato-label {
+    display: block;
+    font-family: var(--font-titulos);
+    font-size: 1rem;
+    color: var(--gris);
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.dato-valor {
+    display: block;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.5rem;
+    color: var(--blanco);
+    transition: color 0.3s ease;
+}
+
+.dato-item:hover .dato-valor {
+    color: var(--rojo);
+}
+
+/* --- SECCIÓN TIMELINE VERTICAL --- */
+.minimal-timeline {
+    padding: 100px 5%;
+    background-color: var(--negro);
+    border-top: 1px solid rgba(213,14,60,0.2);
+    border-bottom: 1px solid rgba(213,14,60,0.2);
+}
+
+.timeline-contenedor {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.timeline-contenedor::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--rojo), transparent);
+}
+
+.timeline-item {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 60px;
+    position: relative;
+}
+
+.timeline-punto {
+    width: 16px;
+    height: 16px;
+    background-color: var(--rojo);
+    border-radius: 50%;
+    margin-left: -7px;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.timeline-item:hover .timeline-punto {
+    transform: scale(1.5);
+    box-shadow: 0 0 20px var(--rojo);
+}
+
+.timeline-contenido {
+    flex: 1;
+}
+
+.timeline-fecha {
+    display: block;
+    font-family: var(--font-titulos);
+    font-size: 2rem;
+    color: var(--rojo);
+    margin-bottom: 10px;
+}
+
+.timeline-desc {
+    font-family: var(--font-texto);
+    font-size: 1rem;
+    color: var(--gris);
+    line-height: 1.6;
+}
+
+/* --- SECCIÓN CITA --- */
+.minimal-cita {
+    padding: 120px 5%;
+    text-align: center;
+}
+
+.cita-contenedor {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.cita-texto {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1.2;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+
+.cita-autor {
+    font-family: var(--font-titulos);
+    font-size: 1.2rem;
+    color: var(--gris);
+    letter-spacing: 3px;
+}
+
+/* --- BOTÓN MINIMAL --- */
+.minimal-navegacion {
+    text-align: center;
+    padding: 60px 5% 100px 5%;
+}
+
+.btn-minimal {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    text-decoration: none;
+    color: var(--blanco);
+    font-family: var(--font-titulos);
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    transition: all 0.3s ease;
+}
+
+.btn-linea {
+    width: 40px;
+    height: 2px;
+    background-color: var(--blanco);
+    transition: all 0.3s ease;
+}
+
+.btn-minimal:hover .btn-linea {
+    width: 80px;
+    background-color: var(--rojo);
+}
+
+.btn-minimal:hover .btn-texto {
+    color: var(--rojo);
+}
+
+/* --- RESPONSIVIDAD --- */
+@media (max-width: 900px) {
+    .datos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-superior {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    
+    .datos-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .timeline-contenedor::before {
+        left: 7px;
+    }
+    
+    .timeline-item {
+        gap: 20px;
+    }
+    
+    .imagen-copyright {
+        position: relative;
+        bottom: 0;
+        margin-top: 20px;
+        justify-content: space-between;
+    }
+}
+/* ========================================= */
+
+.detalle-minimal-main {
+    background-color: var(--negro);
+    color: var(--blanco);
+    padding-top: 100px;
+    overflow-x: hidden;
+}
+
+/* --- HERO MINIMAL --- */
+.minimal-hero {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    padding: 0 5%;
+    position: relative;
+    margin-bottom: 40px;
+}
+
+.hero-contenedor {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.hero-superior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 60px;
+    font-family: var(--font-titulos);
+    font-size: 1.2rem;
+    color: var(--gris);
+    letter-spacing: 2px;
+    opacity: 0;
+    animation: fadeIn 0.8s forwards;
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+.hero-titulo {
+    margin: 0 0 40px 0;
+}
+
+.titulo-linea {
+    display: block;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(5rem, 15vw, 12rem);
+    line-height: 0.85;
+    text-transform: uppercase;
+    color: var(--blanco);
+    opacity: 0;
+    transform: translateY(50px);
+    animation: subirLinea 0.8s 0.2s forwards;
+}
+
+.titulo-linea.titulo-rojo {
+    color: var(--rojo);
+    animation-delay: 0.4s;
+}
+
+@keyframes subirLinea {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-lineas {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, var(--rojo) 0%, transparent 100%);
+    margin: 40px 0;
+    transform: scaleX(0);
+    transform-origin: left;
+    animation: expandirLinea 1s 0.6s forwards;
+}
+
+@keyframes expandirLinea {
+    to { transform: scaleX(1); }
+}
+
+.hero-inferior {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    opacity: 0;
+    animation: fadeIn 0.8s 0.8s forwards;
+}
+
+.hero-descripcion {
+    font-family: var(--font-texto);
+    font-size: 1rem;
+    color: var(--gris);
+    letter-spacing: 2px;
+}
+
+.hero-indicador {
+    width: 60px;
+    height: 60px;
+    border: 2px solid var(--rojo);
+    animation: rotar 4s linear infinite;
+}
+
+@keyframes rotar {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* --- SECCIÓN MANIFIESTO --- */
+.minimal-manifiesto {
+    padding: 100px 5%;
+    background-color: var(--negro);
+    border-top: 1px solid rgba(213,14,60,0.2);
+    border-bottom: 1px solid rgba(213,14,60,0.2);
+}
+
+.manifiesto-contenedor {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.manifiesto-texto-grande {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.3;
+    text-transform: uppercase;
+    margin-bottom: 60px;
+    letter-spacing: -1px;
+}
+
+.manifiesto-separador {
+    width: 150px;
+    height: 4px;
+    background-color: var(--rojo);
+    margin: 40px 0;
+}
+
+.manifiesto-texto-pequeno {
+    font-family: var(--font-texto);
+    font-size: 1.2rem;
+    line-height: 1.8;
+    color: var(--gris);
+    max-width: 600px;
+    font-weight: 300;
+}
+
+/* --- SECCIÓN IMAGEN MINIMAL --- */
+.minimal-imagen {
+    padding: 80px 5%;
+}
+
+.imagen-marco {
+    position: relative;
+    max-width: 1000px;
+    margin: 0 auto;
+    border: 2px solid var(--gris);
+    transition: all 0.5s ease;
+}
+
+.imagen-marco:hover {
+    border-color: var(--rojo);
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(213,14,60,0.2);
+}
+
+.imagen-marco img {
+    width: 100%;
+    height: auto;
+    display: block;
+    filter: grayscale(100%);
+    transition: filter 0.5s ease;
+}
+
+.imagen-marco:hover img {
+    filter: grayscale(0%);
+}
+
+.imagen-copyright {
+    position: absolute;
+    bottom: -30px;
+    right: 0;
+    font-family: var(--font-texto);
+    font-size: 0.8rem;
+    color: var(--gris);
+    display: flex;
+    gap: 20px;
+    letter-spacing: 1px;
+}
+
+/* --- SECCIÓN DATOS EN GRID --- */
+.minimal-datos {
+    padding: 100px 5%;
+    background-color: var(--negro);
+}
+
+.datos-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+    max-width: 1000px;
+    margin: 0 auto;
+    border: 1px solid rgba(174,174,174,0.2);
+    padding: 60px;
+}
+
+.dato-item {
+    text-align: center;
+}
+
+.dato-label {
+    display: block;
+    font-family: var(--font-titulos);
+    font-size: 1rem;
+    color: var(--gris);
+    margin-bottom: 10px;
+    letter-spacing: 2px;
+}
+
+.dato-valor {
+    display: block;
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.5rem;
+    color: var(--blanco);
+    transition: color 0.3s ease;
+}
+
+.dato-item:hover .dato-valor {
+    color: var(--rojo);
+}
+
+/* --- SECCIÓN TIMELINE VERTICAL --- */
+.minimal-timeline {
+    padding: 100px 5%;
+    background-color: var(--negro);
+    border-top: 1px solid rgba(213,14,60,0.2);
+    border-bottom: 1px solid rgba(213,14,60,0.2);
+}
+
+.timeline-contenedor {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.timeline-contenedor::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 20px;
+    bottom: 20px;
+    width: 2px;
+    background: linear-gradient(to bottom, var(--rojo), transparent);
+}
+
+.timeline-item {
+    display: flex;
+    gap: 40px;
+    margin-bottom: 60px;
+    position: relative;
+}
+
+.timeline-punto {
+    width: 16px;
+    height: 16px;
+    background-color: var(--rojo);
+    border-radius: 50%;
+    margin-left: -7px;
+    position: relative;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.timeline-item:hover .timeline-punto {
+    transform: scale(1.5);
+    box-shadow: 0 0 20px var(--rojo);
+}
+
+.timeline-contenido {
+    flex: 1;
+}
+
+.timeline-fecha {
+    display: block;
+    font-family: var(--font-titulos);
+    font-size: 2rem;
+    color: var(--rojo);
+    margin-bottom: 10px;
+}
+
+.timeline-desc {
+    font-family: var(--font-texto);
+    font-size: 1rem;
+    color: var(--gris);
+    line-height: 1.6;
+}
+
+/* --- SECCIÓN CITA --- */
+.minimal-cita {
+    padding: 120px 5%;
+    text-align: center;
+}
+
+.cita-contenedor {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.cita-texto {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1.2;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+}
+
+.cita-autor {
+    font-family: var(--font-titulos);
+    font-size: 1.2rem;
+    color: var(--gris);
+    letter-spacing: 3px;
+}
+
+/* --- BOTÓN MINIMAL --- */
+.minimal-navegacion {
+    text-align: center;
+    padding: 60px 5% 100px 5%;
+}
+
+.btn-minimal {
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    text-decoration: none;
+    color: var(--blanco);
+    font-family: var(--font-titulos);
+    font-size: 1.5rem;
+    letter-spacing: 3px;
+    transition: all 0.3s ease;
+}
+
+.btn-linea {
+    width: 40px;
+    height: 2px;
+    background-color: var(--blanco);
+    transition: all 0.3s ease;
+}
+
+.btn-minimal:hover .btn-linea {
+    width: 80px;
+    background-color: var(--rojo);
+}
+
+.btn-minimal:hover .btn-texto {
+    color: var(--rojo);
+}
+
+/* --- RESPONSIVIDAD --- */
+@media (max-width: 900px) {
+    .datos-grid {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .hero-superior {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    
+    .datos-grid {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
+    
+    .timeline-contenedor::before {
+        left: 7px;
+    }
+    
+    .timeline-item {
+        gap: 20px;
+    }
+    
+    .imagen-copyright {
+        position: relative;
+        bottom: 0;
+        margin-top: 20px;
+        justify-content: space-between;
+    }
+}
+/* ========================================= */
+/* --- DISEÑO VERTICAL / EDITORIAL --- */
+/* ========================================= */
+
+/* ========================================= */
+/* SECCIÓN 1: IMAGEN PROTAGONISTA */
+/* ========================================= */
+
+/* ========================================= */
+/* SECCIÓN 2: TÍTULO VERTICAL (ESTILO REVISTA) */
+/* ========================================= */
+
+/* ========================================= */
+/* SECCIÓN 3: MANIFIESTO COMPACTO */
+/* ========================================= */
+
+/* ========================================= */
+/* SECCIÓN 4: GRID VERTICAL DE IMÁGENES */
+/* ========================================= */
+
+/* ========================================= */
+/* SECCIÓN 5: BOTÓN INTEGRADO */
+/* ========================================= */
+
+/* ========================================= */
+/* RESPONSIVIDAD */
+/* ========================================= */
+
+@media (max-width: 900px) {
+    
+    .titulo-palabra.titulo-rojo {
+        margin-left: 0;
+    }
+    
+    
+    
+    
+    
+    
+}
+
+/* ========================================= */
+/* ESTILO OPCIÓN 2: SPLIT ASIMÉTRICO */
+/* ========================================= */
+
+.body-detalle-split {
+    overflow-y: auto;
+    background-color: var(--negro);
+}
+
+.v3-split-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr; /* Ligeramente más ancho el lado de la imagen */
+    min-height: 100vh;
+    width: 100%;
+    padding-top: 80px; /* Espacio para el navbar */
+}
+
+/* --- BLOQUE IZQUIERDO (INFORMACIÓN) --- */
+.v3-split-info {
+    background-color: var(--negro);
+    display: flex;
+    align-items: center;
+    padding: 60px;
+    border-right: 2px solid var(--rojo);
+    position: relative;
+}
+
+.v3-numero-guia {
+    font-family: var(--font-titulos);
+    font-size: 5rem;
+    color: var(--rojo);
+    line-height: 1;
+    display: block;
+    margin-bottom: 20px;
+}
+
+.v3-titulo-principal {
+    font-size: clamp(5rem, 10vw, 12rem);
+    line-height: 0.85;
+    margin-bottom: 40px;
+}
+
+.text-stroke {
+    color: transparent;
+    -webkit-text-stroke: 2px var(--blanco);
+}
+
+.v3-descripcion-box {
+    max-width: 400px;
+    margin-bottom: 50px;
+}
+
+.v3-tagline {
+    color: var(--rojo);
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+}
+
+.v3-meta-data {
+    display: flex;
+    gap: 30px;
+    border-top: 1px solid var(--gris);
+    padding-top: 20px;
+}
+
+.v3-meta-item span {
+    color: var(--rojo);
+    font-family: var(--font-titulos);
+}
+
+/* --- BLOQUE DERECHO (VISUAL) --- */
+.v3-split-visual {
+    background-color: var(--rojo);
+    padding: 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.v3-marco-imagen-solido {
+    position: relative;
+    width: 100%;
+    height: 70vh;
+    border: 15px solid var(--negro);
+    box-shadow: 20px 20px 0px var(--negro);
+    overflow: hidden;
+}
+
+.v3-marco-imagen-solido img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.2);
+    transition: filter 0.5s ease;
+}
+
+.v3-marco-imagen-solido:hover img {
+    filter: grayscale(0) contrast(1);
+}
+
+.v3-label-flotante {
+    position: absolute;
+    bottom: 20px;
+    right: -30px;
+    background: var(--blanco);
+    color: var(--negro);
+    padding: 10px 40px;
+    transform: rotate(-90deg);
+    font-family: var(--font-titulos);
+    font-size: 1.2rem;
+}
+
+.v3-footer-split {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 40px;
+}
+
+.v3-footer-split p {
+    font-family: var(--font-titulos);
+    font-size: 2.5rem;
+    color: var(--negro);
+    max-width: 300px;
+    line-height: 1;
+}
+
+.v3-btn-back {
+    background: var(--negro);
+    color: var(--blanco);
+    padding: 15px 30px;
+    text-decoration: none;
+    font-family: var(--font-titulos);
+    transition: 0.3s;
+}
+
+.v3-btn-back:hover {
+    background: var(--blanco);
+    color: var(--negro);
+}
+
+/* RESPONSIVIDAD */
+@media (max-width: 900px) {
+    .v3-split-layout {
+        grid-template-columns: 1fr;
+    }
+    .v3-split-info {
+        border-right: none;
+        border-bottom: 5px solid var(--rojo);
+        padding: 40px 20px;
+    }
+    .v3-split-visual {
+        padding: 40px 20px;
+    }
+    .v3-marco-imagen-solido {
+        height: 50vh;
+    }
+}
+/* ========================================= */
+/* DISEÑO HORIZONTAL: BRUTALISMO EXPANDIDO */
+/* ========================================= */
+
+/* Contenedor optimizado para fotos horizontales */
+
+/* --- ANIMACIONES DE ENTRADA --- */
+
+/* --- CONTENIDO EDITORIAL (FONDO BLANCO) --- */
+
+/* RESPONSIVIDAD */
+@media (max-width: 900px) {
+}
+
+/* =========================================
+   CORRECCIONES RESPONSIVAS — ZONA EN LLAMAS
+   Cubre: cursor táctil, split tablets,
+   collage absoluto, grid 2col, acordeón
+   ========================================= */
+
+/* ── CURSOR: desactivar en táctil ── */
+@media (hover: none) and (pointer: coarse) {
+    body { cursor: auto !important; }
+    .cursor-dot,
+    .cursor-ring { display: none !important; }
+}
+
+/* ── NAVBAR: padding mínimo en pantallas muy pequeñas ── */
+@media (max-width: 480px) {
+    header,
+    header.scrolled {
+        padding: 10px 4%;
+    }
+    .logo { font-size: 1.6rem; }
+}
+
+/* ============================================================
+   HERO PRINCIPAL (inicio.html)
+   ============================================================ */
+@media (max-width: 768px) {
+    .hero {
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-top: 120px;
+        min-height: 100vh;
+        gap: 30px;
+    }
+    .hero-content { width: 100%; }
+    .hero-image {
+        position: relative;
+        width: 100%;
+        height: 45vw;
+        min-height: 220px;
+        right: auto; top: auto;
+        transform: none;
+        margin-top: 0;
+    }
+    .hero-numero { font-size: clamp(5rem, 30vw, 10rem); right: 2%; bottom: 2%; }
+    .hero-tag { top: 80px; }
+    .hero-linea-v { top: 100px; }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: clamp(3.5rem, 18vw, 6rem);
+        white-space: normal;
+    }
+}
+
+/* ============================================================
+   GALERÍA ACORDEÓN (inicio.html)
+   ============================================================ */
+@media (max-width: 768px) {
+    .galeria-accordion {
+        flex-direction: column;
+        height: auto;
+        gap: 10px;
+    }
+    .accordion-item {
+        height: 140px;
+        flex: none !important;
+    }
+    .accordion-item:hover {
+        flex: none !important;
+        height: 220px;
+    }
+    .acc-titulo { font-size: 1.5rem; }
+    .acc-num    { font-size: 1.5rem; }
+}
+
+/* ============================================================
+   detalles1.html / detalles5.html — V3 HERO
+   Arregla la colisión de position:absolute vs el override inline
+   ============================================================ */
+
+/* Tablet vertical 600–900 px */
+@media (max-width: 900px) {
+    .detalle-v3-main { padding-top: 90px; padding-bottom: 80px; }
+
+    /* Hero: quitar posición absoluta y pasar a columna normal */
+    .v3-hero-superpuesto {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 30px !important;
+        padding: 40px 5% !important;
+        min-height: auto !important;
+        align-items: flex-start !important;
+    }
+    .v3-caja-titulo {
+        position: relative !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+        mix-blend-mode: normal !important;
+        width: 100%;
+        z-index: 20;
+    }
+    .v3-caja-imagen {
+        position: relative !important;
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+    .v3-caja-imagen img {
+        height: 55vw !important;
+        min-height: 220px;
+        object-fit: cover !important;
+    }
+    .v3-etiqueta-flotante {
+        transform: rotate(0deg);
+        font-size: 1.1rem;
+        padding: 8px 14px;
+        margin-top: 12px;
+    }
+    .v3-titulo-caos {
+        font-size: clamp(3.5rem, 12vw, 7rem);
+    }
+    .fondo-marca-agua { font-size: 50vw; }
+}
+
+/* Móvil pequeño */
+@media (max-width: 480px) {
+    .v3-titulo-caos { font-size: clamp(2.8rem, 14vw, 5rem); }
+    .v3-etiqueta-flotante { font-size: 1rem; }
+    .v3-marco-desfasado { display: none; } /* evita overflow en pantallas muy estrechas */
+}
+
+/* ── Grilla editorial: quitar overflow en tablet ── */
+@media (max-width: 900px) {
+    .v3-grilla-editorial {
+        grid-template-columns: 1fr !important;
+        gap: 60px !important;
+        margin-top: 60px !important;
+    }
+}
+
+/* ── Collage de imágenes absolutas: convertir a flujo normal en móvil ── */
+@media (max-width: 900px) {
+    .v3-columna-imagenes {
+        position: relative;
+        min-height: auto !important;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding-bottom: 10px;
+    }
+    .v3-img-wrap {
+        position: relative !important;
+        top: auto !important; left: auto !important;
+        bottom: auto !important; right: auto !important;
+        width: 100% !important;
+        height: 56vw !important;
+        min-height: 220px;
+    }
+    .v3-img-wrap img {
+        object-fit: cover !important;
+    }
+}
+
+/* ============================================================
+   detalles2.html — MINIMAL (DESEO AL LÍMITE)
+   ============================================================ */
+
+/* Tablet intermedio 600–900 px: dos columnas con más margen */
+@media (min-width: 600px) and (max-width: 900px) {
+    .manifiesto-grid-2col {
+        grid-template-columns: 1fr 1fr;
+        gap: 0 30px;
+    }
+    .manifiesto-texto-pequeno { font-size: 1rem; }
+}
+
+/* Móvil: columna única */
+@media (max-width: 599px) {
+    .manifiesto-grid-2col {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+    .manifiesto-grid-2col::before { display: none !important; }
+    .manifiesto-texto-pequeno { font-size: 1rem; max-width: 100%; }
+}
+
+/* Hero minimal en móvil */
+@media (max-width: 768px) {
+    .minimal-hero { min-height: 60vh; padding: 0 5%; }
+    .titulo-linea { font-size: clamp(3.5rem, 14vw, 7rem); }
+    .minimal-manifiesto { padding: 60px 5%; }
+    .minimal-imagen     { padding: 40px 5%; }
+    .minimal-cita       { padding: 60px 5%; }
+}
+
+/* ============================================================
+   detalles4.html — SPLIT (FOMO)
+   Arregla columnas muy estrechas en tablets 900–1100 px
+   ============================================================ */
+@media (min-width: 900px) and (max-width: 1100px) {
+    .v3-split-layout {
+        grid-template-columns: 1fr 1fr; /* igualar en tablets medianas */
+    }
+    .v3-split-info { padding: 40px 30px; }
+    .v3-titulo-principal { font-size: clamp(3rem, 8vw, 7rem); }
+    .v3-split-visual { padding: 40px 30px; }
+    .v3-marco-imagen-solido {
+        height: 55vh !important;
+        box-shadow: 10px 10px 0 var(--negro) !important;
+    }
+}
+
+/* Móvil: una columna, imagen más compacta */
+@media (max-width: 899px) {
+    .v3-split-layout {
+        grid-template-columns: 1fr !important;
+        padding-top: 70px;
+    }
+    .v3-split-info {
+        border-right: none !important;
+        border-bottom: 3px solid var(--rojo) !important;
+        padding: 30px 5% !important;
+        min-height: auto;
+    }
+    .v3-titulo-principal { font-size: clamp(3rem, 12vw, 8rem); }
+    .v3-split-visual { padding: 30px 5% !important; }
+    .v3-marco-imagen-solido {
+        height: 55vw !important;
+        min-height: 220px;
+        box-shadow: none !important;
+    }
+    .v3-footer-split {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+    .v3-footer-split p { font-size: 1.8rem; max-width: 100%; }
+}
+
+/* ============================================================
+   detalles3.html / detalles.html — HERO IMAGEN WRAPPER
+   ============================================================ */
+@media (max-width: 768px) {
+    .detalle-hero-nuevo { padding: 60px 5% 60px 5%; gap: 30px; }
+    .hero-imagen-wrapper { height: 55vw; min-height: 220px; }
+    .titulo-masivo { font-size: clamp(3rem, 14vw, 7rem); }
+    .meta-horizontal { font-size: 1.1rem; gap: 15px; }
+}
+
+/* ============================================================
+   FOOTER: pequeños ajustes extra
+   ============================================================ */
+@media (max-width: 480px) {
+    .footer { padding: 60px 5% 30px 5%; }
+    .footer-title { font-size: clamp(3rem, 14vw, 6rem); }
+    .footer-links { gap: 25px; }
+}
+
+/* ============================================================
+   SECCIÓN CONTACTO
+   ============================================================ */
+@media (max-width: 600px) {
+    .contacto-main { padding-top: 100px; }
+    .contacto-contenedor { padding: 0 5% 60px 5%; gap: 40px; }
+    .contacto-header { margin-bottom: 60px; }
+    .btn-enviar { font-size: 1.4rem; }
+}
+
+/* ============================================================
+   PREVENCIÓN GLOBAL DE SCROLL HORIZONTAL
+   ============================================================ */
+html, body {
+    overflow-x: hidden;
+    max-width: 100%;
+}
+/* evitar que el marco desfasado rojo salga del viewport */
+@media (max-width: 768px) {
+    .v3-marco-desfasado { display: none; }
+    .detalle-bg-num { font-size: clamp(6rem, 28vw, 14rem); right: -4%; }
+}

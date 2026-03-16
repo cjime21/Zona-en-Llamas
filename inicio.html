@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zona en Llamas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* =============================================
+           ANIMACIONES EXTRA — inicio.html
+           ============================================= */
+
+        /* ── CURSOR ── */
+        body { cursor: none; }
+
+        .cursor-dot {
+            position: fixed;
+            width: 8px; height: 8px;
+            background: var(--rojo);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%,-50%);
+            transition: width .2s ease, height .2s ease;
+        }
+        .cursor-ring {
+            position: fixed;
+            width: 36px; height: 36px;
+            border: 1.5px solid rgba(213,14,60,.55);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%,-50%);
+            transition: opacity .3s ease;
+        }
+
+        /* ── BARRA PROGRESO SCROLL ── */
+        .scroll-progress {
+            position: fixed;
+            top: 0; right: 0;
+            width: 3px; height: 0%;
+            background: var(--rojo);
+            z-index: 2001;
+            box-shadow: 0 0 8px rgba(213,14,60,.7);
+            transition: height .08s linear;
+        }
+
+        /* ── HERO: línea inferior pulsante ── */
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0;
+            width: 100%; height: 3px;
+            background: linear-gradient(90deg, transparent, var(--rojo), transparent);
+            animation: lineaPulso 3s ease-in-out infinite;
+        }
+        @keyframes lineaPulso {
+            0%,100% { opacity: .3; transform: scaleX(.5); }
+            50%     { opacity: 1;  transform: scaleX(1); }
+        }
+
+        /* ── HERO TITLE: revelar desde abajo ── */
+        .hero-title-wrap { overflow: hidden; }
+        .hero-title .outline,
+        .hero-title .filled {
+            display: block;
+            transform: translateY(110%);
+            animation: subirTitulo 1.1s cubic-bezier(.77,0,.175,1) forwards;
+        }
+        .hero-title .filled { animation-delay: .15s; }
+        @keyframes subirTitulo { to { transform: translateY(0); } }
+
+        /* ── SUBTITLE fade + slide ── */
+        .subtitle {
+            opacity: 0;
+            transform: translateY(14px);
+            animation: fadeSlide .9s ease .65s forwards;
+        }
+        @keyframes fadeSlide {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── HERO IMAGE: cortina + respiración de luz ── */
+        .hero-image {
+            clip-path: inset(0 100% 0 0);
+            animation: cortina 1.3s cubic-bezier(.77,0,.175,1) .35s forwards,
+                       respirar 6s ease-in-out 2s infinite;
+        }
+        @keyframes cortina { to { clip-path: inset(0 0% 0 0); } }
+        @keyframes respirar {
+            0%,100% { box-shadow: 0 0 0   rgba(213,14,60,0); }
+            50%     { box-shadow: 0 0 40px rgba(213,14,60,.3); }
+        }
+
+        /* ── IMAGE LABEL: deslizar ── */
+        .image-label {
+            transform: translateX(-110%);
+            opacity: 0;
+            animation: labelEntrar .7s ease 1.5s forwards;
+        }
+        @keyframes labelEntrar { to { transform: translateX(0); opacity: 1; } }
+
+        /* ── NÚMERO FLOTANTE HERO ── */
+        .hero-numero {
+            position: absolute;
+            right: 4%;
+            bottom: 8%;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(8rem, 20vw, 18rem);
+            color: rgba(255,255,255,.025);
+            line-height: 1;
+            pointer-events: none;
+            letter-spacing: -5px;
+            animation: numeroFlota 10s ease-in-out infinite alternate;
+            z-index: 0;
+        }
+        @keyframes numeroFlota {
+            0%   { transform: translateY(0)    rotate(-2deg); }
+            100% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        /* ── TAG ESQUINA HERO ── */
+        .hero-tag {
+            position: absolute;
+            top: 110px; left: 5%;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: .88rem;
+            letter-spacing: 4px;
+            color: var(--gris);
+            z-index: 10;
+            opacity: 0;
+            animation: fadeSlide .8s ease 1.7s forwards;
+        }
+        .hero-tag span { color: var(--rojo); }
+
+        /* ── LÍNEA VERTICAL DECORATIVA ── */
+        .hero-linea-v {
+            position: absolute;
+            left: 5%;
+            top: 130px;
+            width: 1px; height: 0;
+            background: linear-gradient(to bottom, var(--rojo), transparent);
+            animation: crecerLinea 1s ease 2s forwards;
+        }
+        @keyframes crecerLinea { to { height: 70px; } }
+
+        /* ── HOVER IMAGEN HERO: zoom + overlay ── */
+        .hero-image {
+            overflow: hidden !important;
+            cursor: none;
+        }
+
+        /* La imagen del style.css usa filter grayscale(100%) - la heredamos y agregamos zoom */
+        .hero-image img {
+            transition: transform .65s cubic-bezier(.25,.46,.45,.94),
+                        filter .55s ease !important;
+            will-change: transform;
+        }
+        .hero-image:hover img {
+            transform: scale(1.1) !important;
+            filter: grayscale(0%) !important;
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 4rem;
+            letter-spacing: 8px;
+            color: var(--blanco);
+            z-index: 5;
+            opacity: 0;
+            transition: opacity .4s ease;
+            background: rgba(213,14,60,.12);
+        }
+        .hero-image:hover::before { opacity: 1; }
+
+        /* ── NAVBAR: link activo ── */
+        .nav-links a.activo { color: var(--blanco); position: relative; }
+        .nav-links a.activo::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; left: 0;
+            width: 100%; height: 2px;
+            background: var(--rojo);
+            transform: scaleX(0);
+            animation: lineaNav .3s ease forwards;
+        }
+        @keyframes lineaNav { to { transform: scaleX(1); } }
+
+        /* ── GLITCH LOGO ── */
+        .logo { position: relative; display: inline-block; }
+
+        /* ══════════════════════════════════
+           SECCIONES: reveal al hacer scroll
+           ══════════════════════════════════ */
+
+        /* Título editorial */
+        .editorial-titulo { overflow: hidden; }
+        .editorial-titulo-inner {
+            display: block;
+            transform: translateY(100%);
+            transition: transform .95s cubic-bezier(.77,0,.175,1);
+        }
+        .editorial-titulo.en-vista .editorial-titulo-inner {
+            transform: translateY(0);
+        }
+
+        /* Separador rojo */
+        .editorial-separador {
+            width: 0; height: 2px;
+            background: var(--rojo);
+            margin: 28px auto 32px auto;
+            transition: width 1s ease .2s;
+        }
+        .editorial-separador.en-vista { width: 100px; }
+
+        /* Textos */
+        .editorial-texto {
+            opacity: 0;
+            transform: translateY(22px);
+            transition: opacity .8s ease, transform .8s ease;
+        }
+        .editorial-texto.en-vista          { opacity: 1; transform: translateY(0); }
+        .editorial-texto:nth-child(4) { transition-delay: .18s; }
+
+        /* ── GALERÍA HEADER ── */
+        .galeria-header {
+            padding: 60px 5% 40px 5%;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+        .galeria-titulo-wrap { overflow: hidden; }
+        .galeria-titulo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(3rem, 8vw, 7rem);
+            color: var(--blanco);
+            display: block;
+            /* Siempre empieza abajo, sin importar bfcache */
+            transform: translateY(110%);
+            transition: transform 1s cubic-bezier(.77,0,.175,1);
+        }
+        .galeria-titulo.en-vista { transform: translateY(0); }
+        /* Forzar re-animación al volver con botón Atrás:
+           quitar y reapliquest la clase via JS en pageshow */
+        .galeria-conteo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 4px;
+            color: var(--gris);
+            opacity: 0;
+            transition: opacity .8s ease .4s;
+        }
+        .galeria-conteo.en-vista { opacity: 1; }
+
+        /* ── ACCORDION ITEMS: stagger ── */
+        .accordion-item {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .65s ease, transform .65s ease,
+                        flex 1.2s ease-in-out, border-color .8s ease;
+        }
+        .accordion-item.en-vista { opacity: 1; transform: translateY(0); }
+        .galeria-accordion .accordion-item:nth-child(1) { transition-delay: 0s,   0s,   0s, 0s; }
+        .galeria-accordion .accordion-item:nth-child(2) { transition-delay: .08s, .08s, 0s, 0s; }
+        .galeria-accordion .accordion-item:nth-child(3) { transition-delay: .16s, .16s, 0s, 0s; }
+        .galeria-accordion .accordion-item:nth-child(4) { transition-delay: .24s, .24s, 0s, 0s; }
+
+        /* ── NÚMERO CIERRE ── */
+        .cierre-bg-num {
+            position: absolute;
+            bottom: 10px; right: -10px;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(10rem, 28vw, 22rem);
+            color: rgba(213,14,60,.04);
+            pointer-events: none;
+            line-height: 1;
+            letter-spacing: -8px;
+        }
+        .editorial-section { position: relative; }
+
+        /* ── FOOTER TITLE reveal ── */
+        .footer-title-wrap { overflow: hidden; }
+        .footer-title {
+            display: block;
+            transform: translateY(80%);
+            transition: transform 1.1s cubic-bezier(.77,0,.175,1);
+        }
+        .footer-title.en-vista { transform: translateY(0); }
+
+        /* ── MODAL: escala de entrada ── */
+        .modal-content {
+            transform: scale(.9);
+            transition: transform .35s cubic-bezier(.175,.885,.32,1.275);
+        }
+        .modal.active .modal-content { transform: scale(1); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .hero-numero { font-size: 40vw; bottom: 2%; }
+            .hero-tag    { font-size: .75rem; top: 85px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Cursor -->
+    <div class="cursor-dot"  id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+
+    <!-- Progreso scroll -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <header id="navbar">
+        <div class="logo">ZONA <span>EN LLAMAS</span></div>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <nav>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="inicio.html"   data-section="inicio">Origen</a></li>
+                <li><a href="#forjados" data-section="forjados">Mensaje</a></li>
+                <li><a href="#reflejos" data-section="reflejos">Reflejos</a></li>
+                <li><a href="#cierre"   data-section="cierre">Cierre</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ══ HERO ══ -->
+    <section id="inicio" class="hero">
+
+        <div class="hero-content">
+            <div class="hero-title-wrap">
+                <h1 class="hero-title">
+                    <span class="outline">ZONA EN</span>
+                    <span class="filled">LLAMAS</span>
+                </h1>
+            </div>
+        </div>
+
+        <div class="hero-image">
+            <img src="imagenes/index.jpg" alt="Concepto visual">
+            <div class="image-label">DISEÑO GRÁFICO</div>
+        </div>
+    </section>
+
+    <!-- ══ FORJADOS ══ -->
+    <section id="forjados" class="editorial-section">
+         <div class="cierre-bg-num">MENSAJE EDITORIAL</div>
+
+        <div class="cinta cinta-arriba">
+            <div class="cinta-movimiento">
+                <div class="texto-cinta">ENTRE EXPECTATIVAS, PANTALLAS Y FUTURO INCIERTO, ALGO SIEMPRE ESTÁ ARDIENDO <span>//</span> </div>
+                <div class="texto-cinta">ENTRE EXPECTATIVAS, PANTALLAS Y FUTURO INCIERTO, ALGO SIEMPRE ESTÁ ARDIENDO <span>//</span> </div>
+                <div class="texto-cinta">ENTRE EXPECTATIVAS, PANTALLAS Y FUTURO INCIERTO, ALGO SIEMPRE ESTÁ ARDIENDO <span>//</span> </div>
+                <div class="texto-cinta">ENTRE EXPECTATIVAS, PANTALLAS Y FUTURO INCIERTO, ALGO SIEMPRE ESTÁ ARDIENDO <span>//</span> </div>
+            </div>
+        </div>
+
+        <div class="editorial-content">
+            <h2 class="editorial-titulo">
+                <span class="editorial-titulo-inner">MENSAJE EDITORIAL</span>
+            </h2>
+            <div class="editorial-separador"></div>
+            <p class="editorial-texto">Hay algo ardiendo en la experiencia de ser joven al día de hoy. No es un fuego literal, sino una combustión interna, una mente saturada, el deseo de llegar más lejos, la presión por no detenerse nunca. Las generaciones actuales viven entre estímulos, expectativas y un entorno social que exige velocidad y productividad.</p>
+        </div>
+
+        <div class="cinta cinta-abajo">
+            <div class="cinta-movimiento reverso">
+                <div class="texto-cinta">ENTRE EXPECTATIVAS, PANTALLAS Y FUTURO INCIERTO, ALGO SIEMPRE ESTÁ ARDIENDO <span>//</span> </div>
+                <div class="texto-cinta">ENTRE EXPECTATIVAS, PANTALLAS Y FUTURO INCIERTO, ALGO SIEMPRE ESTÁ ARDIENDO <span>//</span> </div>
+                <div class="texto-cinta">ENTRE EXPECTATIVAS, PANTALLAS Y FUTURO INCIERTO, ALGO SIEMPRE ESTÁ ARDIENDO <span>//</span> </div>
+                <div class="texto-cinta">ENTRE EXPECTATIVAS, PANTALLAS Y FUTURO INCIERTO, ALGO SIEMPRE ESTÁ ARDIENDO <span>//</span> </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ REFLEJOS / GALERÍA ══ -->
+    <section id="reflejos" class="galeria-section">
+
+        <div class="galeria-header">
+            <div class="galeria-titulo-wrap">
+                <span class="galeria-titulo">REFLEJOS</span>
+            </div>
+        </div>
+
+        <div class="accordion-contenedor">
+
+            <div class="galeria-accordion">
+                <a href="detalles.html" class="accordion-item" data-index="1">
+                    <img src="imagenes/index.jpg" alt="Identidad Visual" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo">Marzo 2026</h3></div>
+                </a>
+                <div class="accordion-item" data-index="2" data-src="imagenes/segunda.jpg" data-alt="Cartelismo">
+                    <img src="imagenes/segunda.jpg" alt="" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo"></h3></div>
+                </div>
+                <a href="detalles1.html" class="accordion-item" data-index="3">
+                    <img src="imagenes/undecima.jpg" alt="Tipografía" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo">Fotografía</h3></div>
+                </a>
+                <div class="accordion-item" data-index="4" data-src="imagenes/tercera.jpg" data-alt="Diseño Editorial">
+                    <img src="imagenes/tercera.jpg" alt="Diseño Editorial" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo"></h3></div>
+                </div>
+            </div>
+
+            <div class="galeria-accordion">
+                <a href="detalles2.html" class="accordion-item" data-index="5">
+                    <img src="imagenes/cuarta.jpg" alt="Packaging" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo">DESEO AL LÍMITE</h3></div>
+                </a>
+                <div class="accordion-item" data-index="6" data-src="imagenes/Propuesta.jpg" data-alt="Fotografía">
+                    <img src="imagenes/Propuesta.jpg" alt="Fotografía" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo"></h3></div>
+                </div>
+                <a href="detalles4.html" class="accordion-item" data-index="7">
+                    <img src="imagenes/quinta.jpg" alt="Campaña" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo">FOMO</h3></div>
+                </a>
+
+            </div>
+
+            <div class="galeria-accordion">
+
+                <div class="accordion-item" data-index="10" data-src="imagenes/sexta.jpg" data-alt="Animación">
+                    <img src="imagenes/sexta.jpg" alt="Animación" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo"></h3></div>
+                </div>
+                <a href="detalles3.html" class="accordion-item" data-index="11">
+                    <img src="imagenes/septima.jpg" alt="Branding" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo">COLECTIVO</h3></div>
+                </a>
+                <div class="accordion-item" data-index="12" data-src="imagenes/septima.jpg" data-alt="Cenizas">
+                    <img src="imagenes/septima.jpg" alt="Cenizas" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo"></h3></div>
+                </div>
+                <a href="detalles5.html" class="accordion-item" data-index="11">
+                    <img src="imagenes/octava.jpg" alt="Branding" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo">MEMORIAS</h3></div>
+                </a>
+
+            </div>
+
+            <div class="galeria-accordion">
+
+                <div class="accordion-item" data-index="12" data-src="imagenes/novena.jpg" data-alt="Cenizas">
+                    <img src="imagenes/novena.jpg" alt="Cenizas" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num" style="color:#000000;">LA VERDADERA TRANSFORMACIÓN NO CONSISTE EN EVITAR LAS LLAMAS, </span><h3 class="acc-titulo">SINO EN APRENDER A ATRAVESARLAS SIN CONSUMIRSE EN EL PROCESO</h3></div>
+                </div>
+                <div class="accordion-item" data-index="12" data-src="imagenes/decima.jpg" data-alt="Cenizas">
+                    <img src="imagenes/decima.jpg" alt="Cenizas" class="accordion-img">
+                    <div class="accordion-content"><span class="acc-num"></span><h3 class="acc-titulo"></h3></div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ══ CIERRE ══ -->
+    <section id="cierre" class="editorial-section">
+        <div class="cierre-bg-num">CIERRE EDITORIAL</div>
+
+        <div class="cinta cinta-arriba invertida">
+            <div class="cinta-movimiento reverso">
+                <div class="texto-cinta">CRECER HOY TAMBIÉN SIGNIFICA APRENDER A VIVIR CON EL CALOR DE LA PRESIÓN <span>//</span> </div>
+                <div class="texto-cinta">CRECER HOY TAMBIÉN SIGNIFICA APRENDER A VIVIR CON EL CALOR DE LA PRESIÓN <span>//</span> </div>
+                <div class="texto-cinta">CRECER HOY TAMBIÉN SIGNIFICA APRENDER A VIVIR CON EL CALOR DE LA PRESIÓN <span>//</span> </div>
+                <div class="texto-cinta">CRECER HOY TAMBIÉN SIGNIFICA APRENDER A VIVIR CON EL CALOR DE LA PRESIÓN <span>//</span> </div>
+            </div>
+        </div>
+
+        <div class="editorial-content">
+            <h2 class="editorial-titulo">
+                <span class="editorial-titulo-inner">CIERRE EDITORIAL</span>
+            </h2>
+            <div class="editorial-separador"></div>
+            <p class="editorial-texto">La verdadera transformación no consiste en evitar las llamas, sino en aprender a atravesarlas sin consumirse en el proceso.</p>
+        </div>
+
+        <div class="cinta cinta-abajo invertida">
+            <div class="cinta-movimiento">
+                <div class="texto-cinta">CRECER HOY TAMBIÉN SIGNIFICA APRENDER A VIVIR CON EL CALOR DE LA PRESIÓN <span>//</span> </div>
+                <div class="texto-cinta">CRECER HOY TAMBIÉN SIGNIFICA APRENDER A VIVIR CON EL CALOR DE LA PRESIÓN <span>//</span> </div>
+                <div class="texto-cinta">CRECER HOY TAMBIÉN SIGNIFICA APRENDER A VIVIR CON EL CALOR DE LA PRESIÓN <span>//</span> </div>
+                <div class="texto-cinta">CRECER HOY TAMBIÉN SIGNIFICA APRENDER A VIVIR CON EL CALOR DE LA PRESIÓN <span>//</span> </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MODAL -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn">&times;</span>
+            <img id="modal-img" src="" alt="Imagen ampliada">
+        </div>
+    </div>
+
+    <footer id="contacto" class="footer">
+        <div class="footer-top fade-in">
+            <div class="footer-title-wrap">
+                <h2 class="footer-title">ZONA EN <br><span class="text-red">LLAMAS</span></h2>
+            </div>
+            <div class="footer-links">
+                <div class="link-column">
+                    <h3>Navegación</h3>
+                    <a href="#inicio.html">Origen</a>
+                    <a href="#forjados">Mensaje</a>
+                    <a href="#reflejos">Reflejos</a>
+                    <a href="#cierre">Cierre</a>
+                    <a href="contacto.html">Contacto</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom fade-in">
+            <p>&copy; 2026 Zona en Llamas. Proyecto de Diseño Gráfico.</p>
+            <a href="#" class="back-to-top">↑ VOLVER ARRIBA</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+    /* =============================================
+       JS ADICIONAL — inicio.html
+       ============================================= */
+
+    // ── CURSOR ──
+    const dot  = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    const esTactil = window.matchMedia('(hover:none) and (pointer:coarse)').matches;
+    if(esTactil){ if(dot) dot.style.display='none'; if(ring) ring.style.display='none'; }
+    let mx = -200, my = -200, rx = -200, ry = -200;
+
+    if(!esTactil){
+    document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        dot.style.left = mx + 'px';
+        dot.style.top  = my + 'px';
+    });
+
+    (function animRing() {
+        rx += (mx - rx) * 0.1;
+        ry += (my - ry) * 0.1;
+        ring.style.left = rx + 'px';
+        ring.style.top  = ry + 'px';
+        requestAnimationFrame(animRing);
+    })();
+
+    document.querySelectorAll('a, button, .accordion-item, .close-btn').forEach(el => {
+        el.addEventListener('mouseenter', () => {
+            dot.style.width = dot.style.height = '18px';
+            ring.style.opacity = '0';
+        });
+        el.addEventListener('mouseleave', () => {
+            dot.style.width = dot.style.height = '8px';
+            ring.style.opacity = '1';
+        });
+    });
+    }
+
+    // ── PROGRESO SCROLL ──
+    const progBar = document.getElementById('scrollProgress');
+    window.addEventListener('scroll', () => {
+        const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+        progBar.style.height = pct + '%';
+    }, { passive: true });
+
+    // ── GLITCH PERIÓDICO EN LOGO ──
+    const logo = document.querySelector('.logo');
+    function glitchLogo() {
+        logo.style.cssText += ';text-shadow:3px 0 var(--rojo),-3px 0 rgba(174,174,174,.4);transform:translateX(' + ((Math.random()-.5)*5) + 'px)';
+        setTimeout(() => { logo.style.textShadow = ''; logo.style.transform = ''; }, 75);
+    }
+    setInterval(glitchLogo, 4200 + Math.random() * 3000);
+
+    // ── INTERSECTION OBSERVER: scroll-reveal ──
+    const io = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) {
+                e.target.classList.add('en-vista');
+                io.unobserve(e.target);
+            }
+        });
+    }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
+
+    const revelarEls = [
+        ...document.querySelectorAll('.editorial-titulo'),
+        ...document.querySelectorAll('.editorial-separador'),
+        ...document.querySelectorAll('.editorial-texto'),
+        ...document.querySelectorAll('.accordion-item'),
+        ...document.querySelectorAll('.galeria-titulo'),
+        ...document.querySelectorAll('.galeria-conteo'),
+        ...document.querySelectorAll('.footer-title'),
+        ...document.querySelectorAll('.fade-in'),
+    ];
+
+    revelarEls.forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (r.top < window.innerHeight && r.bottom > 0) {
+            el.classList.add('en-vista');
+        } else {
+            io.observe(el);
+        }
+    });
+
+    // ── BFCACHE FIX: cuando el usuario vuelve con el botón Atrás ──
+    // El navegador restaura la página desde memoria sin re-ejecutar JS.
+    // Las transiciones CSS no se re-disparan aunque el elemento ya tenga 'en-vista'.
+    // Solución: quitar la clase y re-añadirla en el siguiente frame para forzar
+    // que la transición se ejecute de nuevo.
+    window.addEventListener('pageshow', e => {
+        if (e.persisted) {
+            revelarEls.forEach(el => {
+                // Quitar la clase para resetear el estado visual
+                el.classList.remove('en-vista');
+            });
+            // Re-añadir en el siguiente frame de pintado para que el navegador
+            // registre el cambio y re-dispare la transición
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    revelarEls.forEach(el => {
+                        const r = el.getBoundingClientRect();
+                        if (r.top < window.innerHeight && r.bottom > 0) {
+                            el.classList.add('en-vista');
+                        } else {
+                            io.observe(el);
+                        }
+                    });
+                });
+            });
+        }
+    });
+
+    // ── NAVBAR ACTIVO por sección ──
+    const secciones  = document.querySelectorAll('section[id]');
+    const navLinks   = document.querySelectorAll('.nav-links a[data-section]');
+    const ioNav = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting)
+                navLinks.forEach(a => a.classList.toggle('activo', a.dataset.section === e.target.id));
+        });
+    }, { threshold: 0.45 });
+    secciones.forEach(s => ioNav.observe(s));
+
+    // ── PARALLAX HERO IMAGE (aplicado al img interno, no al contenedor) ──
+    if (window.innerWidth > 768) {
+        const heroImgEl = document.querySelector('.hero-image img');
+        let isHoveringHero = false;
+        const heroBox = document.querySelector('.hero-image');
+        if (heroBox) {
+            heroBox.addEventListener('mouseenter', () => { isHoveringHero = true; });
+            heroBox.addEventListener('mouseleave', () => {
+                isHoveringHero = false;
+                if (heroImgEl) heroImgEl.style.transform = 'scale(1.04)';
+            });
+        }
+        window.addEventListener('mousemove', e => {
+            if (!heroImgEl || isHoveringHero) return;
+            const xp = (e.clientX / window.innerWidth  - .5) * 10;
+            const yp = (e.clientY / window.innerHeight - .5) * 6;
+            // No tocar transform durante hover para no pisar el scale del CSS
+            heroImgEl.style.transform = `scale(1.04) translate(${xp}px,${yp}px)`;
+        }, { passive: true });
+    }
+
+    // ── CONTADOR ANIMADO galería ──
+    const conteo  = document.querySelector('.galeria-conteo');
+    const ioCount = new IntersectionObserver(entries => {
+        if (!entries[0].isIntersecting) return;
+        let n = 0;
+        const iv = setInterval(() => {
+            n++;
+            conteo.textContent = (n < 10 ? '0' + n : n) + ' PIEZAS';
+            if (n >= 12) clearInterval(iv);
+        }, 80);
+        ioCount.disconnect();
+    }, { threshold: 0.5 });
+    if (conteo) ioCount.observe(conteo);
+
+    </script>
+</body>
+</html>

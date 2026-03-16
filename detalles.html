@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identidad Visual · Zona en Llamas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Montserrat:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* =============================================
+           DETALLES — animaciones
+           ============================================= */
+
+        body { cursor: none; }
+
+        /* ── CURSOR ── */
+        .cursor-dot {
+            position: fixed; width: 8px; height: 8px;
+            background: var(--rojo); border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            transform: translate(-50%,-50%);
+            transition: width .2s, height .2s;
+        }
+        .cursor-ring {
+            position: fixed; width: 36px; height: 36px;
+            border: 1.5px solid rgba(213,14,60,.55); border-radius: 50%;
+            pointer-events: none; z-index: 9998;
+            transform: translate(-50%,-50%);
+            transition: opacity .3s;
+        }
+
+        /* ── PROGRESO SCROLL ── */
+        .scroll-progress {
+            position: fixed; top: 0; right: 0;
+            width: 3px; height: 0%;
+            background: var(--rojo); z-index: 2001;
+            box-shadow: 0 0 8px rgba(213,14,60,.7);
+        }
+
+        /* ── NÚMERO DE PROYECTO (background) ── */
+        .detalle-bg-num {
+            position: fixed;
+            top: 50%; right: -2%;
+            transform: translateY(-50%);
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: clamp(10rem, 25vw, 22rem);
+            color: rgba(255,255,255,.02);
+            pointer-events: none; z-index: 0;
+            letter-spacing: -8px; line-height: 1;
+            animation: numFlota 14s ease-in-out infinite alternate;
+        }
+        @keyframes numFlota {
+            0%   { transform: translateY(-50%) rotate(-3deg); }
+            100% { transform: translateY(-54%) rotate(2deg); }
+        }
+
+        /* ── HERO: título ya tiene animación CSS via .linea-revelar, reforzamos ── */
+        .detalle-hero-nuevo {
+            position: relative; z-index: 10;
+        }
+
+        /* Tag de número de proyecto */
+        .detalle-project-tag {
+            position: absolute;
+            top: 30px; left: 5%;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: .85rem; letter-spacing: 5px;
+            color: var(--gris); z-index: 20;
+            opacity: 0;
+            animation: fadeUp .8s ease .2s forwards;
+        }
+        .detalle-project-tag span { color: var(--rojo); }
+
+        /* Línea vertical decorativa */
+        .detalle-linea-v {
+            position: absolute;
+            left: 5%; top: 55px;
+            width: 1px; height: 0;
+            background: linear-gradient(to bottom, var(--rojo), transparent);
+            animation: crecerV 1s ease .8s forwards;
+        }
+        @keyframes crecerV { to { height: 60px; } }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── IMAGEN HERO: proporciones naturales + latido ── */
+        .hero-imagen-wrapper {
+            height: auto !important;       /* cancela el 65vh del style.css */
+            max-width: 900px;
+            margin: 0 auto;
+            animation: revelarCortina 1.2s cubic-bezier(.77,0,.175,1) .8s both,
+                       latido 5s ease-in-out 2.5s infinite;
+        }
+        .hero-imagen-wrapper img {
+            object-fit: contain !important; /* respeta la proporción original */
+            height: auto !important;
+            width: 100%;
+            display: block;
+        }
+        @keyframes revelarCortina {
+            from { clip-path: polygon(0 50%,100% 50%,100% 50%,0 50%); border-color: transparent; }
+            to   { clip-path: polygon(0 0,100% 0,100% 100%,0 100%); border-color: var(--rojo); }
+        }
+        @keyframes latido {
+            0%,100% { box-shadow: 0 0 0   rgba(213,14,60,0); }
+            50%     { box-shadow: 0 0 30px rgba(213,14,60,.3); }
+        }
+
+        /* ── MANIFIESTO: reveal al hacer scroll ── */
+        .manifiesto-texto-grande {
+            opacity: 0; transform: translateY(30px);
+            transition: opacity 1s ease, transform 1s ease;
+        }
+        .manifiesto-texto-grande.en-vista { opacity: 1; transform: translateY(0); }
+
+        .manifiesto-grid p {
+            opacity: 0; transform: translateY(20px);
+            transition: opacity .8s ease, transform .8s ease;
+        }
+        .manifiesto-grid p.en-vista { opacity: 1; transform: translateY(0); }
+        .manifiesto-grid p:nth-child(2) { transition-delay: .15s; }
+
+        /* ── NEÓN EN TEXTO DESTACADO (solo al hover del párrafo) ── */
+        .neon-rojo {
+            color: var(--rojo);
+            text-shadow: none;
+            transition: text-shadow .3s ease;
+        }
+        .manifiesto-texto-grande:hover .neon-rojo {
+            text-shadow:
+                0 0 4px  rgba(213,14,60,1),
+                0 0 10px rgba(213,14,60,.9),
+                0 0 20px rgba(213,14,60,.7),
+                0 0 40px rgba(213,14,60,.5),
+                0 0 70px rgba(213,14,60,.3);
+            animation: neonParpadeo 1.8s ease-in-out infinite alternate;
+        }
+        @keyframes neonParpadeo {
+            0%   {
+                text-shadow:
+                    0 0 4px  rgba(213,14,60,1),
+                    0 0 10px rgba(213,14,60,.9),
+                    0 0 20px rgba(213,14,60,.7),
+                    0 0 40px rgba(213,14,60,.5),
+                    0 0 70px rgba(213,14,60,.3);
+            }
+            48%  { text-shadow: none; }
+            52%  {
+                text-shadow:
+                    0 0 4px  rgba(213,14,60,1),
+                    0 0 10px rgba(213,14,60,.9),
+                    0 0 20px rgba(213,14,60,.7),
+                    0 0 40px rgba(213,14,60,.5),
+                    0 0 70px rgba(213,14,60,.3);
+            }
+            100% {
+                text-shadow:
+                    0 0 6px  rgba(213,14,60,1),
+                    0 0 15px rgba(213,14,60,.95),
+                    0 0 30px rgba(213,14,60,.8),
+                    0 0 60px rgba(213,14,60,.6),
+                    0 0 100px rgba(213,14,60,.4);
+            }
+        }
+
+        /* Línea separadora en manifiesto */
+        .manifiesto-linea {
+            width: 0; height: 3px;
+            background: var(--rojo);
+            margin: 40px 0;
+            transition: width 1s ease .2s;
+        }
+        .manifiesto-linea.en-vista { width: 80px; }
+
+        /* ── EXPLOSION: título ── */
+        .explosion-titulo {
+            overflow: hidden;
+        }
+        .explosion-titulo-inner {
+            display: block;
+            transform: translateY(110%);
+            transition: transform 1s cubic-bezier(.77,0,.175,1);
+        }
+        .explosion-titulo.en-vista .explosion-titulo-inner {
+            transform: translateY(0);
+        }
+
+        /* ── EXPLOSION CARDS: entrada escalonada ── */
+        .explosion-item {
+            opacity: 0; transform: translateY(40px) scale(.97);
+            transition: opacity .7s ease, transform .7s ease,
+                        border-color .4s, box-shadow .4s;
+        }
+        .explosion-item.en-vista { opacity: 1; transform: translateY(0) scale(1); }
+        .explosion-item:nth-child(1) { transition-delay: 0s; }
+        .explosion-item:nth-child(2) { transition-delay: .12s; }
+        .explosion-item:nth-child(3) { transition-delay: .24s; }
+
+        /* Card destacada: flota sola */
+        .explosion-item-destacado {
+            animation: none !important; /* overridden after en-vista */
+        }
+        .explosion-item-destacado.en-vista {
+            animation: flotarCard 3s ease-in-out 0.5s infinite !important;
+            transform: none;
+        }
+        @keyframes flotarCard {
+            0%,100% { transform: translateY(-12px); }
+            50%     { transform: translateY(-22px); }
+        }
+
+        /* ── BOTÓN VOLVER: entrada ── */
+        .btn-regresar-brutal {
+            opacity: 0; transform: translateY(20px);
+            transition: opacity .7s ease, transform .7s ease;
+        }
+        .btn-regresar-brutal.en-vista { opacity: 1; transform: translateY(0); }
+
+        /* ── FOOTER REVEAL ── */
+        .footer-title-wrap { overflow: hidden; }
+        .footer-title {
+            transform: translateY(80%);
+            transition: transform 1.1s cubic-bezier(.77,0,.175,1);
+        }
+        .footer-title.en-vista { transform: translateY(0); }
+
+        /* ── GLITCH LOGO ── */
+        .logo { position: relative; display: inline-block; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .detalle-bg-num { font-size: 40vw; right: -5%; }
+            .detalle-project-tag { font-size: .75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cursor-dot"  id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+    <div class="scroll-progress" id="scrollProgress"></div>
+    <div class="detalle-bg-num">IMPACTO</div>
+
+    <svg style="width:0;height:0;position:absolute;">
+        <filter id="filtro-estatica">
+            <feTurbulence type="fractalNoise" baseFrequency="0.01 0.3" numOctaves="3" result="ruido"/>
+            <feDisplacementMap in="SourceGraphic" in2="ruido" scale="15" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+    </svg>
+
+    <header id="navbar" class="scrolled">
+        <div class="logo">ZONA <span>EN LLAMAS</span></div>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+        </div>
+        <nav>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="inicio.html" data-section="inicio">Origen</a></li>
+                <li><a href="inicio.html#forjados" data-section="forjados">Mensaje</a></li>
+                <li><a href="inicio.html#reflejos" data-section="reflejos">Reflejos</a></li>
+                <li><a href="inicio.html#cierre" data-section="cierre">Cierre</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="proyecto-main detalle-main">
+
+        <!-- HERO -->
+        <section class="detalle-hero-nuevo">
+            <div class="hero-texto-wrapper">
+                <h1 class="titulo-masivo">
+                    <span class="linea-revelar"><span class="outline">IMPACTO</span></span>
+                </h1>
+            </div>
+            <div class="hero-imagen-wrapper">
+                <img src="imagenes/1er_Portada.jpg" alt="Proyecto Identidad Visual">
+            </div>
+        </section>
+
+        <!-- MANIFIESTO -->
+        <section class="detalle-manifiesto">
+            <div class="manifiesto-contenedor">
+                <p class="manifiesto-texto-grande">
+                    El ruido no es un error, <span class="neon-rojo">es la seña</span> de identidad.
+                </p>
+                <div class="manifiesto-linea"></div>
+                <div class="manifiesto-grid">
+                    <p>El presente implica convivir con múltiples formas de combustión emocional. El deseo impulsa, la ansiedad presiona, el agotamiento alerta y la memoria recuerda que cada experiencia deja una marca. </p>
+                    <p>Reconocer estas tensiones no significa apagar el fuego, sino entenderlo: nombrar aquello que se siente, compartirlo y reflexionarlo colectivamente puede abrir nuevas maneras de vivir con mayor conciencia y equilibrio.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- DETONANTES -->
+        <section class="detalle-explosion">
+            <h2 class="explosion-titulo">
+                <span class="explosion-titulo-inner"><span class="text-red">DETONANTES</span> VISUALES</span>
+            </h2>
+            <div class="explosion-grid">
+                <div class="explosion-item card-hover-3d">
+                    <img src="imagenes/Tipografía.jpg" alt="">
+                    <span class="explosion-label">Sistema Tipográfico</span>
+                    <div class="card-overlay"></div>
+                </div>
+                <div class="explosion-item explosion-item-destacado card-hover-3d">
+                    <img src="imagenes/undecima.jpg" alt="Detalle 2">
+                    <span class="explosion-label">Fotografía</span>
+                    <div class="card-overlay"></div>
+                </div>
+                <div class="explosion-item card-hover-3d">
+                    <img src="imagenes/Color.jpg" alt="Detalle 3">
+                    <span class="explosion-label">Color</span>
+                    <div class="card-overlay"></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="detalle-navegacion">
+            <a href="inicio.html#reflejos" class="btn-regresar-brutal electric-hover">← VOLVER AL FUEGO</a>
+        </div>
+
+    </main>
+
+    <footer id="contacto" class="footer">
+        <div class="footer-top">
+            <div class="footer-title-wrap">
+                <h2 class="footer-title">ZONA EN <br><span class="text-red">LLAMAS</span></h2>
+            </div>
+            <div class="footer-links">
+                <div class="link-column">
+                    <h3>Navegación</h3>
+                    <a href="inicio.html">Origen</a>
+                    <a href="inicio.html#forjados">Mensaje</a>
+                    <a href="inicio.html#reflejos">Reflejos</a>
+                    <a href="contacto.html">Contacto</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <a href="#" class="back-to-top">↑ VOLVER ARRIBA</a>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+    // ── CURSOR ──
+    const dot = document.getElementById('cursorDot');
+    const ring = document.getElementById('cursorRing');
+    let mx=-200,my=-200,rx=-200,ry=-200;
+    document.addEventListener('mousemove', e => {
+        mx=e.clientX; my=e.clientY;
+        dot.style.left=mx+'px'; dot.style.top=my+'px';
+    });
+    (function ar(){ rx+=(mx-rx)*.1; ry+=(my-ry)*.1; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(ar); })();
+    document.querySelectorAll('a,button,.card-hover-3d').forEach(el=>{
+        el.addEventListener('mouseenter',()=>{ dot.style.width=dot.style.height='18px'; ring.style.opacity='0'; });
+        el.addEventListener('mouseleave',()=>{ dot.style.width=dot.style.height='8px'; ring.style.opacity='1'; });
+    });
+
+    // ── PROGRESO SCROLL ──
+    const pb = document.getElementById('scrollProgress');
+    window.addEventListener('scroll',()=>{ pb.style.height=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%'; },{passive:true});
+
+    // ── GLITCH LOGO ──
+    const logo = document.querySelector('.logo');
+    setInterval(()=>{
+        logo.style.textShadow=`3px 0 var(--rojo),-3px 0 rgba(174,174,174,.4)`;
+        logo.style.transform=`translateX(${(Math.random()-.5)*5}px)`;
+        setTimeout(()=>{ logo.style.textShadow=''; logo.style.transform=''; },75);
+    }, 4500+Math.random()*3000);
+
+    // ── INTERSECTION OBSERVER ──
+    const io = new IntersectionObserver(entries=>{
+        entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('en-vista'); });
+    },{ threshold: 0.12 });
+
+    [
+        ...document.querySelectorAll('.manifiesto-texto-grande'),
+        ...document.querySelectorAll('.manifiesto-linea'),
+        ...document.querySelectorAll('.manifiesto-grid p'),
+        ...document.querySelectorAll('.explosion-titulo'),
+        ...document.querySelectorAll('.explosion-item'),
+        ...document.querySelectorAll('.btn-regresar-brutal'),
+        ...document.querySelectorAll('.footer-title'),
+        ...document.querySelectorAll('.fade-in'),
+    ].forEach(el=>io.observe(el));
+
+    // ── PARALLAX SUTIL EN IMAGEN HERO ──
+    if(window.innerWidth>768){
+        const hw = document.querySelector('.hero-imagen-wrapper');
+        window.addEventListener('mousemove',e=>{
+            const xp=(e.clientX/window.innerWidth-.5)*10;
+            const yp=(e.clientY/window.innerHeight-.5)*6;
+            if(hw) hw.style.transform=`translate(${xp}px,${yp}px)`;
+        },{passive:true});
+    }
+    </script>
+</body>
+</html>
