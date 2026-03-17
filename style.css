@@ -2914,3 +2914,11 @@ html, body {
     .v3-marco-desfasado { display: none; }
     .detalle-bg-num { font-size: clamp(6rem, 28vw, 14rem); right: -4%; }
 }
+.link-column span {
+    font-family: var(--font-texto);
+    color: var(--gris);
+    font-size: 1rem;
+    text-transform: uppercase;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+}
